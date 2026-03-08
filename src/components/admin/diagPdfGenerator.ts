@@ -170,38 +170,38 @@ export function downloadDiagHTML(diag: any, client: any) {
 <html><head><meta charset="UTF-8">
 <title>Diagnóstico SST — ${(u?.empresa || '').replace(/</g, '&lt;')}</title>
 <style>
-  body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;color:#0A2540}
+  body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;color:#0A2540;font-size:13px}
   @page{size:A4;margin:0}
   @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 </head><body>
-<div style="background:linear-gradient(135deg,#0A2540,#1E3A8A);color:white;padding:26px 36px">
-  <h1 style="margin:0;font-size:19px;font-weight:700">Diagnóstico SG-SST — ${u?.empresa || ''}</h1>
-  <p style="margin:5px 0 0;opacity:0.75;font-size:11px">${u?.nombre || ''} &nbsp;·&nbsp; ${d.fecha} &nbsp;·&nbsp; SafeWork SST Consultoría</p>
+<div style="background:linear-gradient(135deg,#0A2540,#1E3A8A);color:white;padding:28px 40px">
+  <h1 style="margin:0;font-size:22px;font-weight:700">Diagnóstico SG-SST — ${u?.empresa || ''}</h1>
+  <p style="margin:6px 0 0;opacity:0.75;font-size:13px">${u?.nombre || ''} &nbsp;·&nbsp; ${d.fecha} &nbsp;·&nbsp; SafeWork SST Consultoría</p>
 </div>
-<div style="padding:24px 36px">
-  <div style="text-align:center;margin-bottom:18px">
-    <div style="display:inline-block;width:90px;height:90px;border-radius:50%;border:6px solid ${color};box-sizing:border-box;padding-top:13px">
-      <div style="font-size:28px;font-weight:700;color:${color};line-height:1">${d.score}</div>
-      <div style="font-size:9px;color:#6b7280">/ 100 pts</div>
-      <div style="font-size:9px;font-weight:700;color:${color};margin-top:1px">Nivel ${lvlTxt}</div>
+<div style="padding:28px 40px">
+  <div style="text-align:center;margin-bottom:22px">
+    <div style="display:inline-block;width:100px;height:100px;border-radius:50%;border:6px solid ${color};box-sizing:border-box;padding-top:16px">
+      <div style="font-size:32px;font-weight:700;color:${color};line-height:1">${d.score}</div>
+      <div style="font-size:11px;color:#6b7280">/ 100 pts</div>
+      <div style="font-size:11px;font-weight:700;color:${color};margin-top:1px">Nivel ${lvlTxt}</div>
     </div>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px">${metaHTML}</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">
-    <div style="background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e5e7eb;text-align:center">
-      <div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:8px;letter-spacing:0.4px">Radar de cumplimiento</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px">${metaHTML}</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <div style="background:#f8fafc;padding:14px;border-radius:8px;border:1px solid #e5e7eb;text-align:center">
+      <div style="font-size:11px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:10px;letter-spacing:0.4px">Radar de cumplimiento</div>
       ${radarSVG}
     </div>
-    <div style="background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e5e7eb;text-align:center">
-      <div style="font-size:9px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:8px;letter-spacing:0.4px">Puntaje por categoría</div>
+    <div style="background:#f8fafc;padding:14px;border-radius:8px;border:1px solid #e5e7eb;text-align:center">
+      <div style="font-size:11px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:10px;letter-spacing:0.4px">Puntaje por categoría</div>
       ${barSVG}
     </div>
   </div>
   ${colorLegendHTML}
-  <h3 style="font-size:13px;font-weight:700;border-bottom:2px solid #1E3A8A;padding-bottom:5px;margin-bottom:12px;color:#0A2540">Detalle por categoría</h3>
+  <h3 style="font-size:15px;font-weight:700;border-bottom:2px solid #1E3A8A;padding-bottom:6px;margin-bottom:14px;color:#0A2540">Detalle por categoría</h3>
   ${catRows}
-  <div style="margin-top:20px;padding:11px 14px;background:#eff6ff;border-radius:6px;border-left:4px solid #3B82F6;font-size:10px;color:#1E3A8A">
+  <div style="margin-top:24px;padding:13px 16px;background:#eff6ff;border-radius:6px;border-left:4px solid #3B82F6;font-size:12px;color:#1E3A8A">
     Informe generado por <strong>SafeWork SST Consultoría</strong> &nbsp;·&nbsp; ${new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
     &nbsp;·&nbsp; Basado en <strong>Decreto 1072/2015</strong> y <strong>Resolución 0312/2019</strong>.
   </div>
