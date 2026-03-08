@@ -98,15 +98,15 @@ export function downloadDiagHTML(diag: any, client: any) {
   // Color legend table
   const colorLegendHTML = `
     <div style="margin-bottom:20px">
-      <div style="font-size:13px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Referencia de categorías</div>
+      <div style="font-size:15px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Referencia de categorías</div>
       <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden">
         <thead><tr style="background:#f8fafc">
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Color</th>
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Categoría</th>
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Ítems OK</th>
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts obtenidos</th>
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts posibles</th>
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Cumplimiento</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Color</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Categoría</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Ítems OK</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts obtenidos</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts posibles</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Cumplimiento</th>
         </tr></thead>
         <tbody>
         ${CHECKLIST.map((cat, i) => {
@@ -117,11 +117,11 @@ export function downloadDiagHTML(diag: any, client: any) {
           const answered = cat.items.filter(it => answers[it.id]).length;
           return `<tr style="border-bottom:1px solid #f3f4f6">
             <td style="padding:7px 12px;text-align:center"><div style="width:16px;height:16px;border-radius:4px;background:${CAT_HEX[i]};display:inline-block"></div></td>
-            <td style="padding:7px 12px;font-size:13px;color:#0A2540;font-weight:600">${cat.icon} ${cat.title.split('.')[1]?.trim()}</td>
-            <td style="padding:7px 12px;font-size:13px;text-align:center;color:#374151">${answered}/${cat.items.length}</td>
-            <td style="padding:7px 12px;font-size:13px;text-align:center;color:${sc};font-weight:700">${ptsE.toFixed(1)}</td>
-            <td style="padding:7px 12px;font-size:13px;text-align:center;color:#6b7280">${ptsT}</td>
-            <td style="padding:7px 12px;font-size:13.5px;text-align:center;color:${sc};font-weight:700">${s}%</td>
+            <td style="padding:8px 12px;font-size:14.5px;color:#0A2540;font-weight:600">${cat.icon} ${cat.title.split('.')[1]?.trim()}</td>
+            <td style="padding:8px 12px;font-size:14.5px;text-align:center;color:#374151">${answered}/${cat.items.length}</td>
+            <td style="padding:8px 12px;font-size:14.5px;text-align:center;color:${sc};font-weight:700">${ptsE.toFixed(1)}</td>
+            <td style="padding:8px 12px;font-size:14.5px;text-align:center;color:#6b7280">${ptsT}</td>
+            <td style="padding:8px 12px;font-size:15px;text-align:center;color:${sc};font-weight:700">${s}%</td>
           </tr>`;
         }).join('')}
         </tbody>
@@ -135,8 +135,8 @@ export function downloadDiagHTML(diag: any, client: any) {
   ];
   const metaHTML = metaItems.map(([l, v]) =>
     `<div style="background:#f8fafc;padding:10px 14px;border-radius:6px;border:1px solid #e5e7eb">
-      <div style="font-size:11px;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:0.4px">${l}</div>
-      <div style="font-size:14px;font-weight:700;color:#0A2540;margin-top:3px">${v || '—'}</div>
+      <div style="font-size:12.5px;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:0.4px">${l}</div>
+      <div style="font-size:15.5px;font-weight:700;color:#0A2540;margin-top:3px">${v || '—'}</div>
     </div>`
   ).join('');
 
@@ -149,17 +149,17 @@ export function downloadDiagHTML(diag: any, client: any) {
     const rows = cat.items.map(item => {
       const ok = answers[item.id];
       return `<tr style="border-bottom:1px solid #f3f4f6">
-        <td style="padding:6px 10px;font-size:12.5px;color:#374151">${item.text}</td>
-        <td style="padding:6px 10px;font-size:13px;text-align:center;color:${ok ? '#059669' : '#DC2626'};font-weight:700">${ok ? '✓' : '✗'}</td>
-        <td style="padding:6px 10px;font-size:12px;text-align:center;color:#6b7280">${item.pts} pts</td>
+        <td style="padding:7px 12px;font-size:14px;color:#374151">${item.text}</td>
+        <td style="padding:7px 12px;font-size:14.5px;text-align:center;color:${ok ? '#059669' : '#DC2626'};font-weight:700">${ok ? '✓' : '✗'}</td>
+        <td style="padding:7px 12px;font-size:13.5px;text-align:center;color:#6b7280">${item.pts} pts</td>
       </tr>`;
     }).join('');
     return `<div style="margin-bottom:16px;break-inside:avoid">
       <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:9px 14px;border-radius:5px;border-left:4px solid ${c};margin-bottom:5px">
-        <span style="font-size:14px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
+        <span style="font-size:15.5px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
         <div style="text-align:right">
-          <span style="font-size:14px;font-weight:700;color:${c}">${s}%</span>
-          <span style="font-size:11px;color:#9ca3af;margin-left:8px">${answered}/${cat.items.length} ítems · ${ptsEarned.toFixed(1)}/${ptsTotal} pts</span>
+          <span style="font-size:15.5px;font-weight:700;color:${c}">${s}%</span>
+          <span style="font-size:12.5px;color:#9ca3af;margin-left:8px">${answered}/${cat.items.length} ítems · ${ptsEarned.toFixed(1)}/${ptsTotal} pts</span>
         </div>
       </div>
       <table style="width:100%;border-collapse:collapse">${rows}</table>
@@ -170,40 +170,40 @@ export function downloadDiagHTML(diag: any, client: any) {
 <html><head><meta charset="UTF-8">
 <title>Diagnóstico SST — ${(u?.empresa || '').replace(/</g, '&lt;')}</title>
 <style>
-  body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;color:#0A2540;font-size:13px}
+  body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;color:#0A2540;font-size:14.5px}
   @page{size:A4;margin:0}
   @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
 </head><body>
 <div style="background:linear-gradient(135deg,#0A2540,#1E3A8A);color:white;padding:28px 40px">
-  <h1 style="margin:0;font-size:22px;font-weight:700">Diagnóstico SG-SST — ${u?.empresa || ''}</h1>
-  <p style="margin:6px 0 0;opacity:0.75;font-size:13px">${u?.nombre || ''} &nbsp;·&nbsp; ${d.fecha} &nbsp;·&nbsp; SafeWork SST Consultoría</p>
+  <h1 style="margin:0;font-size:24px;font-weight:700">Diagnóstico SG-SST — ${u?.empresa || ''}</h1>
+  <p style="margin:6px 0 0;opacity:0.75;font-size:14.5px">${u?.nombre || ''} &nbsp;·&nbsp; ${d.fecha} &nbsp;·&nbsp; SafeWork SST Consultoría</p>
 </div>
 <div style="padding:28px 40px">
   <div style="text-align:center;margin-bottom:22px">
     <div style="display:inline-block;width:100px;height:100px;border-radius:50%;border:6px solid ${color};box-sizing:border-box;padding-top:16px">
       <div style="font-size:32px;font-weight:700;color:${color};line-height:1">${d.score}</div>
-      <div style="font-size:11px;color:#6b7280">/ 100 pts</div>
-      <div style="font-size:11px;font-weight:700;color:${color};margin-top:1px">Nivel ${lvlTxt}</div>
+      <div style="font-size:12.5px;color:#6b7280">/ 100 pts</div>
+      <div style="font-size:12.5px;font-weight:700;color:${color};margin-top:1px">Nivel ${lvlTxt}</div>
     </div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px">${metaHTML}</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
     <div style="background:#f8fafc;padding:14px;border-radius:8px;border:1px solid #e5e7eb;text-align:center">
-      <div style="font-size:11px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:10px;letter-spacing:0.4px">Radar de cumplimiento</div>
+      <div style="font-size:13px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:10px;letter-spacing:0.4px">Radar de cumplimiento</div>
       ${radarSVG}
     </div>
     <div style="background:#f8fafc;padding:14px;border-radius:8px;border:1px solid #e5e7eb;text-align:center">
-      <div style="font-size:11px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:10px;letter-spacing:0.4px">Puntaje por categoría</div>
+      <div style="font-size:13px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:10px;letter-spacing:0.4px">Puntaje por categoría</div>
       ${barSVG}
     </div>
   </div>
   ${colorLegendHTML}
-  <h3 style="font-size:15px;font-weight:700;border-bottom:2px solid #1E3A8A;padding-bottom:6px;margin-bottom:14px;color:#0A2540">Detalle por categoría</h3>
+  <h3 style="font-size:17px;font-weight:700;border-bottom:2px solid #1E3A8A;padding-bottom:6px;margin-bottom:14px;color:#0A2540">Detalle por categoría</h3>
   ${catRows}
   <div style="margin-top:24px;padding:13px 16px;background:#eff6ff;border-radius:6px;border-left:4px solid #3B82F6;font-size:12px;color:#1E3A8A">
-    Informe generado por <strong>SafeWork SST Consultoría</strong> &nbsp;·&nbsp; ${new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
-    &nbsp;·&nbsp; Basado en <strong>Decreto 1072/2015</strong> y <strong>Resolución 0312/2019</strong>.
+    <span style="font-size:13.5px">Informe generado por <strong>SafeWork SST Consultoría</strong> &nbsp;·&nbsp; ${new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
+    &nbsp;·&nbsp; Basado en <strong>Decreto 1072/2015</strong> y <strong>Resolución 0312/2019</strong>.</span>
   </div>
 </div>
 </body></html>`;
