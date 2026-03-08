@@ -52,7 +52,7 @@ export const CHECKLIST = [
     id: "mejora",
     title: "4. Mejoramiento Continuo",
     icon: "🔄",
-    color: "#F87171",
+    color: "#EF4444",
     items: [
       { id: "m1", text: "Existen planes de acción para las no conformidades identificadas en auditorías e inspecciones.", pts: 3 },
       { id: "m2", text: "Las acciones correctivas implementadas son verificadas en su cumplimiento y efectividad.", pts: 2.5 },
