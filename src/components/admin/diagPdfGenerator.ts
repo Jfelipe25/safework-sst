@@ -1,7 +1,7 @@
 import { CHECKLIST } from "@/data/checklist";
 import { toast } from "sonner";
 
-const CAT_HEX = ['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4'];
+const CAT_HEX = ['#3B82F6','#6366F1','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4'];
 const TOTAL_PTS = CHECKLIST.reduce((s, cat) => s + cat.items.reduce((ss, it) => ss + it.pts, 0), 0);
 
 const SHORT_LABELS = ['Planificación', 'Implementación', 'Verificación', 'Mejoramiento', 'Gestión Riesgo', 'Medicina Trabajo'];
