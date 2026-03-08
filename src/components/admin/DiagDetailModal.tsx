@@ -153,7 +153,7 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
               const s = catScores[cat.id] || 0;
               const vc = s >= 80 ? '#34D399' : s >= 50 ? '#FBBF24' : '#F87171';
               const ptsTotal = cat.items.reduce((a, it) => a + it.pts, 0);
-              const ptsEarned = cat.items.filter(it => answers[it.id]).reduce((a, it) => a + it.pts, 0);
+              const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
               return (
                 <div key={cat.id} className="flex items-center gap-2 py-1.5 px-2 bg-white/[0.03] rounded-lg">
                   <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: CAT_HEX[i], boxShadow: `0 0 5px ${CAT_HEX[i]}80` }} />
