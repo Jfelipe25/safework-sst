@@ -6,12 +6,15 @@ import { Button } from "@/components/ui/button";
 import { CHECKLIST, CAT_COLORS, getCatTotalPts } from "@/data/checklist";
 import { supabase } from "@/integrations/supabase/client";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from "recharts";
+import { Phone, Check } from "lucide-react";
+import { toast } from "sonner";
 
 const Resultado = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [diag, setDiag] = useState<any>(null);
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     if (id) fetchDiag();
@@ -20,6 +23,23 @@ const Resultado = () => {
   const fetchDiag = async () => {
     const { data } = await supabase.from("diagnostics").select("*").eq("id", id).single();
     setDiag(data);
+  };
+
+  const handleContactar = async () => {
+    if (!user) return;
+    setSending(true);
+    const { error } = await supabase.from("solicitudes").insert({
+      client_id: user.id,
+      mensaje: `Solicitud de asesoría desde diagnóstico ${id}`,
+      score: diag?.score || 0,
+      nivel: diag?.level || "low",
+    });
+    setSending(false);
+    if (error) {
+      toast.error("Error al enviar solicitud");
+    } else {
+      toast.success("¡Solicitud enviada! La asesora te contactará pronto.");
+    }
   };
 
   if (!diag) return (
@@ -132,8 +152,34 @@ const Resultado = () => {
             })}
           </div>
 
+          {/* Plan recomendado + CTA */}
+          <div className="bg-secondary rounded-2xl p-6 text-left mb-8">
+            <h3 className="font-heading text-lg font-bold text-foreground mb-4">🚀 Plan Integral SST — Básico + Implementación</h3>
+            <ul className="space-y-2.5 mb-0">
+              {[
+                "Documentación completa del SG-SST",
+                "Implementación guiada paso a paso",
+                "Conformación y capacitación del COPASST",
+                "Elaboración de matriz de peligros y riesgos GTC-45",
+                "Plan de emergencias y simulacros",
+                "Programa de capacitación a trabajadores",
+                "Acompañamiento en mediciones higiénicas",
+                "Seguimiento mensual durante 12 meses",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-foreground">
+                  <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
           <div className="flex gap-4 justify-center flex-wrap">
-            <Button onClick={() => navigate("/dashboard")}>← Mis diagnósticos</Button>
+            <Button size="lg" onClick={handleContactar} disabled={sending} className="gap-2">
+              <Phone className="h-4 w-4" />
+              {sending ? "Enviando…" : "Contactar asesora"}
+            </Button>
+            <Button variant="outline" size="lg" onClick={() => navigate("/dashboard")}>← Mis diagnósticos</Button>
           </div>
         </div>
       </main>
