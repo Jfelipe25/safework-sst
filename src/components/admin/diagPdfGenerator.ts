@@ -266,8 +266,34 @@ export function downloadDiagHTML(diag: any, client: any) {
 </body></html>`;
 
   const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-  const winUrl = URL.createObjectURL(blob);
-  const win = window.open(winUrl, '_blank', 'width=1000,height=780');
-  if (win) { win.onload = () => setTimeout(() => win.print(), 400); }
-  else { toast.error('Permite ventanas emergentes para descargar el PDF'); }
+  const blobUrl = URL.createObjectURL(blob);
+
+  // Use a hidden iframe to avoid popup blockers
+  let iframe = document.getElementById('__diag_print_frame') as HTMLIFrameElement | null;
+  if (iframe) iframe.remove();
+  iframe = document.createElement('iframe');
+  iframe.id = '__diag_print_frame';
+  iframe.style.position = 'fixed';
+  iframe.style.top = '-9999px';
+  iframe.style.left = '-9999px';
+  iframe.style.width = '1000px';
+  iframe.style.height = '780px';
+  iframe.style.border = 'none';
+  document.body.appendChild(iframe);
+
+  iframe.onload = () => {
+    setTimeout(() => {
+      try {
+        iframe!.contentWindow?.print();
+      } catch {
+        // Fallback: open in new tab
+        window.open(blobUrl, '_blank');
+      }
+      setTimeout(() => {
+        iframe?.remove();
+        URL.revokeObjectURL(blobUrl);
+      }, 1000);
+    }, 500);
+  };
+  iframe.src = blobUrl;
 }
