@@ -90,12 +90,12 @@ export const CHECKLIST = [
 ];
 
 export const CAT_COLORS: Record<string, string> = {
-  planeacion: "#60A5FA",
-  implementacion: "#34D399",
-  verificacion: "#FBBF24",
-  mejora: "#F87171",
-  gestion: "#A78BFA",
-  vigilancia: "#14B8A6",
+  planeacion: "#3B82F6",
+  implementacion: "#10B981",
+  verificacion: "#F59E0B",
+  mejora: "#EF4444",
+  gestion: "#8B5CF6",
+  vigilancia: "#06B6D4",
 };
 
 export const getCatTotalPts = (catId: string) => {
