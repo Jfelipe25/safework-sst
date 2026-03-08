@@ -78,7 +78,7 @@ export const CHECKLIST = [
     id: "vigilancia",
     title: "6. Medicina del Trabajo y Vigilancia",
     icon: "🏥",
-    color: "#F472B6",
+    color: "#14B8A6",
     items: [
       { id: "vl1", text: "Los diagnósticos de salud de los trabajadores están actualizados y se usan para tomar decisiones preventivas.", pts: 2.5 },
       { id: "vl2", text: "Se realizan actividades de pausas activas y ergonomía para los trabajadores con riesgos biomecánicos.", pts: 2 },
@@ -95,7 +95,7 @@ export const CAT_COLORS: Record<string, string> = {
   verificacion: "#FBBF24",
   mejora: "#F87171",
   gestion: "#A78BFA",
-  vigilancia: "#F472B6",
+  vigilancia: "#14B8A6",
 };
 
 export const getCatTotalPts = (catId: string) => {
