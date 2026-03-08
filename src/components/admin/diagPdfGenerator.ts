@@ -113,8 +113,8 @@ export function downloadDiagHTML(diag: any, client: any) {
           const s = catScores[cat.id] || 0;
           const sc = s >= 80 ? '#059669' : s >= 50 ? '#D97706' : '#DC2626';
           const ptsT = cat.items.reduce((a, it) => a + it.pts, 0);
-          const ptsE = cat.items.filter(it => answers[it.id]).reduce((a, it) => a + it.pts, 0);
-          const answered = cat.items.filter(it => answers[it.id]).length;
+      const ptsE = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
+          const answered = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length;
           return `<tr style="border-bottom:1px solid #f3f4f6">
             <td style="padding:7px 12px;text-align:center"><div style="width:16px;height:16px;border-radius:4px;background:${CAT_HEX[i]};display:inline-block"></div></td>
             <td style="padding:8px 12px;font-size:14.5px;color:#0A2540;font-weight:600">${cat.icon} ${cat.title.split('.')[1]?.trim()}</td>
