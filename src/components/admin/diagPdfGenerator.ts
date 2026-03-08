@@ -58,16 +58,9 @@ function generateRadarSVG(vals: number[], labels: string[], colors: string[] | n
     `<circle cx="${p.x}" cy="${p.y}" r="6" fill="${colors ? colors[i] : '#3B82F6'}" stroke="white" stroke-width="2.5"/>`
   ).join('');
 
-  // Value labels near each dot
-  const valueLabels = points.map((p, i) => {
-    const angle = startAngle + i * angleStep;
-    const ox = Math.cos(angle) * 18, oy = Math.sin(angle) * 18;
-    return `<text x="${p.x + ox}" y="${p.y + oy}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0f172a" font-weight="700">${vals[i]}%</text>`;
-  }).join('');
-
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
     <rect width="${width}" height="${height}" fill="white" rx="6"/>
-    ${gridLines}${axisLines}${dataPath}${dots}${valueLabels}
+    ${gridLines}${axisLines}${dataPath}${dots}
   </svg>`;
 }
 
