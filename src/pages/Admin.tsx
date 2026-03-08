@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import AdminDiagnosticos from "@/components/admin/AdminDiagnosticos";
+import AdminGraficas from "@/components/admin/AdminGraficas";
 import AdminClientes from "@/components/admin/AdminClientes";
 import AdminTrazabilidad from "@/components/admin/AdminTrazabilidad";
 import AdminNotificaciones from "@/components/admin/AdminNotificaciones";
@@ -50,6 +51,7 @@ const Admin = () => {
   const panels: Record<string, React.ReactNode> = {
     dashboard: <AdminDashboard data={data} />,
     diagnosticos: <AdminDiagnosticos data={data} onRefresh={fetchAll} />,
+    graficas: <AdminGraficas data={data} />,
     clientes: <AdminClientes data={data} />,
     trazabilidad: <AdminTrazabilidad data={data} onRefresh={fetchAll} />,
     notificaciones: <AdminNotificaciones data={data} onRefresh={fetchAll} />,
