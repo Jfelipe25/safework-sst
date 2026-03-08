@@ -3,7 +3,7 @@ export const CHECKLIST = [
     id: "planeacion",
     title: "1. Planificación del SG-SST",
     icon: "📌",
-    color: "#60A5FA",
+    color: "#3B82F6",
     items: [
       { id: "p1", text: "La empresa cuenta con una política de SST documentada, firmada por la alta dirección y comunicada a todos los trabajadores.", pts: 2.5 },
       { id: "p2", text: "Existe una asignación y comunicación de responsabilidades en SST para todos los niveles de la organización.", pts: 2.5 },
@@ -19,7 +19,7 @@ export const CHECKLIST = [
     id: "implementacion",
     title: "2. Implementación y Operación",
     icon: "⚙️",
-    color: "#34D399",
+    color: "#10B981",
     items: [
       { id: "i1", text: "Existe un programa de capacitación en SST que incluye la inducción, re-inducción y formación continua.", pts: 3 },
       { id: "i2", text: "Está conformado y en funcionamiento el COPASST (10+ trabajadores) o Vigía SST (menos de 10 trabajadores).", pts: 3.5 },
@@ -37,7 +37,7 @@ export const CHECKLIST = [
     id: "verificacion",
     title: "3. Verificación y Seguimiento",
     icon: "✔️",
-    color: "#FBBF24",
+    color: "#F59E0B",
     items: [
       { id: "v1", text: "La empresa realiza inspecciones periódicas de las condiciones de trabajo y del ambiente laboral.", pts: 2.5 },
       { id: "v2", text: "Se tiene un sistema de reporte e investigación de accidentes e incidentes de trabajo.", pts: 3.5 },
@@ -52,7 +52,7 @@ export const CHECKLIST = [
     id: "mejora",
     title: "4. Mejoramiento Continuo",
     icon: "🔄",
-    color: "#F87171",
+    color: "#EF4444",
     items: [
       { id: "m1", text: "Existen planes de acción para las no conformidades identificadas en auditorías e inspecciones.", pts: 3 },
       { id: "m2", text: "Las acciones correctivas implementadas son verificadas en su cumplimiento y efectividad.", pts: 2.5 },
@@ -65,7 +65,7 @@ export const CHECKLIST = [
     id: "gestion",
     title: "5. Gestión del Riesgo y Contratistas",
     icon: "🤝",
-    color: "#A78BFA",
+    color: "#8B5CF6",
     items: [
       { id: "g1", text: "Se realizan acciones de promoción de la salud y prevención de enfermedades laborales.", pts: 2.5 },
       { id: "g2", text: "La empresa tiene programas de vigilancia epidemiológica para los riesgos prioritarios.", pts: 2.5 },
@@ -78,7 +78,7 @@ export const CHECKLIST = [
     id: "vigilancia",
     title: "6. Medicina del Trabajo y Vigilancia",
     icon: "🏥",
-    color: "#14B8A6",
+    color: "#06B6D4",
     items: [
       { id: "vl1", text: "Los diagnósticos de salud de los trabajadores están actualizados y se usan para tomar decisiones preventivas.", pts: 2.5 },
       { id: "vl2", text: "Se realizan actividades de pausas activas y ergonomía para los trabajadores con riesgos biomecánicos.", pts: 2 },
@@ -90,12 +90,12 @@ export const CHECKLIST = [
 ];
 
 export const CAT_COLORS: Record<string, string> = {
-  planeacion: "#60A5FA",
-  implementacion: "#34D399",
-  verificacion: "#FBBF24",
-  mejora: "#F87171",
-  gestion: "#A78BFA",
-  vigilancia: "#14B8A6",
+  planeacion: "#3B82F6",
+  implementacion: "#10B981",
+  verificacion: "#F59E0B",
+  mejora: "#EF4444",
+  gestion: "#8B5CF6",
+  vigilancia: "#06B6D4",
 };
 
 export const getCatTotalPts = (catId: string) => {

@@ -6,7 +6,7 @@ import {
 } from "recharts";
 
 const TOTAL_PTS = CHECKLIST.reduce((s, cat) => s + cat.items.reduce((ss, it) => ss + it.pts, 0), 0);
-const CAT_HEX = ['#60A5FA','#34D399','#FBBF24','#F87171','#A78BFA','#14B8A6'];
+const CAT_HEX = ['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4'];
 interface Props {
   diag: any;
   client: any;
@@ -20,16 +20,21 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
   const color = diag.level === "high" ? "#059669" : diag.level === "medium" ? "#D97706" : "#DC2626";
   const lvlTxt = diag.level === "high" ? "Alto" : diag.level === "medium" ? "Medio" : "Bajo";
 
+  const SHORT_LABELS = [
+    'Planificación', 'Implementación', 'Verificación',
+    'Mejoramiento', 'Gestión Riesgo', 'Medicina Trabajo'
+  ];
+
   const radarData = useMemo(() =>
     CHECKLIST.map((cat, i) => ({
-      subject: cat.title.split('.')[1]?.trim() || cat.title,
+      subject: SHORT_LABELS[i],
       value: catScores[cat.id] || 0,
       fullMark: 100,
     })), [catScores]);
 
   const barData = useMemo(() =>
     CHECKLIST.map((cat, i) => ({
-      name: (cat.title.split('.')[1]?.trim() || cat.id).substring(0, 10) + '…',
+      name: SHORT_LABELS[i],
       fullName: cat.title.split('.')[1]?.trim() || cat.id,
       value: catScores[cat.id] || 0,
       fill: CAT_HEX[i],
@@ -91,27 +96,44 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div className="bg-white/[0.04] rounded-xl p-5">
             <div className="text-[0.75rem] font-bold text-white/40 uppercase tracking-wide mb-3">Radar de cumplimiento</div>
-            <div className="h-[240px]">
+            <div className="h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
-                <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="65%">
-                  <PolarGrid stroke="rgba(255,255,255,0.15)" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 10, fontWeight: 600 }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.4)', fontSize: 9 }} tickCount={5} />
-                  <Radar name="Cumplimiento" dataKey="value" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.1} strokeWidth={2} dot={renderRadarDot} />
+                <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="55%">
+                  <PolarGrid stroke="rgba(255,255,255,0.12)" />
+                  <PolarAngleAxis
+                    dataKey="subject"
+                    tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 600 }}
+                    tickLine={false}
+                  />
+                  <PolarRadiusAxis
+                    angle={90}
+                    domain={[0, 100]}
+                    tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 9 }}
+                    tickCount={5}
+                    axisLine={false}
+                  />
+                  <Radar name="Cumplimiento" dataKey="value" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.12} strokeWidth={2.5} dot={renderRadarDot} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
           </div>
           <div className="bg-white/[0.04] rounded-xl p-5">
             <div className="text-[0.75rem] font-bold text-white/40 uppercase tracking-wide mb-3">Puntaje por categoría</div>
-            <div className="h-[240px]">
+            <div className="h-[280px]">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={barData}>
+                <BarChart data={barData} margin={{ bottom: 50 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                  <XAxis dataKey="name" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 9 }} interval={0} />
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 10 }}
+                    interval={0}
+                    angle={-35}
+                    textAnchor="end"
+                    height={60}
+                  />
                   <YAxis domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 9 }} tickFormatter={v => `${v}%`} />
                   <Tooltip cursor={false} contentStyle={{ background: '#0A2540', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, color: 'white', fontSize: 12 }}
-                    formatter={(value: number, name: string, props: any) => [`${value}%`, props.payload.fullName]} />
+                    formatter={(value: number, _name: string, props: any) => [`${value}%`, props.payload.fullName]} />
                   <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                     {barData.map((entry, i) => (
                       <Cell key={i} fill={entry.fill} />
