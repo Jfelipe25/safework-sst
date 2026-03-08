@@ -210,7 +210,7 @@ export function downloadDiagHTML(diag: any, client: any) {
       const rows = cat.items.map(item => {
         const ok = answers[item.id] === "si" || answers[item.id] === true;
         const na = answers[item.id] === "na";
-        return `<tr style="border-bottom:1px solid #f3f4f6;${na ? 'opacity:0.4' : ''}; page-break-inside:avoid; break-inside:avoid">
+        return `<tr style="border-bottom:1px solid #f3f4f6;${na ? 'opacity:0.4' : ''}">`
           <td style="padding:7px 12px;font-size:14px;color:#374151">${item.text}${na ? ' <em style="color:#9ca3af;font-size:12px">(N/A)</em>' : ''}</td>
           <td style="padding:7px 12px;font-size:14.5px;text-align:center;color:${na ? '#9ca3af' : ok ? '#059669' : '#DC2626'};font-weight:700">${na ? '⊘' : ok ? '✓' : '✗'}</td>
           <td style="padding:7px 12px;font-size:13.5px;text-align:center;color:#6b7280">${item.pts} pts</td>
