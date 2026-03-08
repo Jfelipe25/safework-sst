@@ -8,13 +8,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from "recharts";
 import { Phone, Check } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
 
 const Resultado = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [diag, setDiag] = useState<any>(null);
   const [sending, setSending] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [mensaje, setMensaje] = useState("");
+  const [disponibilidad, setDisponibilidad] = useState("");
 
   useEffect(() => {
     if (id) fetchDiag();
@@ -25,20 +32,35 @@ const Resultado = () => {
     setDiag(data);
   };
 
-  const handleContactar = async () => {
-    if (!user) return;
+  const openContactModal = () => {
+    const levelLabel = diag?.level === "high" ? "Alto" : diag?.level === "medium" ? "Medio" : "Bajo";
+    const ctx = diag
+      ? `Acabo de completar mi diagnóstico SG-SST con un resultado de ${diag.score}/100 pts (Nivel ${levelLabel}). Me gustaría recibir asesoría.`
+      : "Me gustaría recibir información sobre los servicios de SafeWork SST.";
+    setMensaje(ctx);
+    setDisponibilidad("");
+    setShowModal(true);
+  };
+
+  const handleSubmitContact = async () => {
+    if (!user || !mensaje.trim()) {
+      toast.error("Escribe un mensaje");
+      return;
+    }
     setSending(true);
     const { error } = await supabase.from("solicitudes").insert({
       client_id: user.id,
-      mensaje: `Solicitud de asesoría desde diagnóstico ${id}`,
+      mensaje: mensaje.trim(),
+      disponibilidad: disponibilidad || "No especificada",
       score: diag?.score || 0,
       nivel: diag?.level || "low",
     });
     setSending(false);
+    setShowModal(false);
     if (error) {
       toast.error("Error al enviar solicitud");
     } else {
-      toast.success("¡Solicitud enviada! La asesora te contactará pronto.");
+      toast.success("✅ Solicitud enviada — te contactaremos pronto");
     }
   };
 
@@ -118,9 +140,9 @@ const Resultado = () => {
             <div className="bg-blue-pale/50 rounded-xl p-4">
               <h4 className="text-xs font-bold text-corp uppercase tracking-wider mb-3">Puntaje por categoría</h4>
               <ResponsiveContainer width="100%" height={220}>
-                 <BarChart data={barData} margin={{ bottom: 40 }}>
-                   <XAxis dataKey="name" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} angle={-30} textAnchor="end" interval={0} height={50} />
-                   <YAxis domain={[0, 100]} tick={{ fontSize: 9 }} />
+                <BarChart data={barData} margin={{ bottom: 40 }}>
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} angle={-30} textAnchor="end" interval={0} height={50} />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 9 }} />
                   <Tooltip />
                   <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                     {barData.map((entry, i) => (
@@ -152,7 +174,7 @@ const Resultado = () => {
             })}
           </div>
 
-          {/* Plan recomendado + CTA */}
+          {/* Plan recomendado */}
           <div className="bg-secondary rounded-2xl p-6 text-left mb-8">
             <h3 className="font-heading text-lg font-bold text-foreground mb-4">🚀 Plan Integral SST — Básico + Implementación</h3>
             <ul className="space-y-2.5 mb-0">
@@ -175,14 +197,65 @@ const Resultado = () => {
           </div>
 
           <div className="flex gap-4 justify-center flex-wrap">
-            <Button size="lg" onClick={handleContactar} disabled={sending} className="gap-2">
+            <Button size="lg" onClick={openContactModal} className="gap-2">
               <Phone className="h-4 w-4" />
-              {sending ? "Enviando…" : "Contactar asesora"}
+              Contactar asesora
             </Button>
             <Button variant="outline" size="lg" onClick={() => navigate("/dashboard")}>← Mis diagnósticos</Button>
           </div>
         </div>
       </main>
+
+      {/* Modal Contactar Asesora */}
+      <Dialog open={showModal} onOpenChange={setShowModal}>
+        <DialogContent className="sm:max-w-[480px]">
+          <DialogHeader>
+            <DialogTitle className="font-heading text-lg">📞 Contactar asesora</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4 mt-2">
+            {profile && (
+              <p className="text-sm text-muted-foreground">
+                Enviaremos tu solicitud desde <strong className="text-foreground">{profile.nombre}</strong> ({profile.empresa})
+              </p>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="contact-msg">Mensaje</Label>
+              <Textarea
+                id="contact-msg"
+                value={mensaje}
+                onChange={(e) => setMensaje(e.target.value)}
+                rows={5}
+                placeholder="Describe tu necesidad..."
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Disponibilidad para contacto</Label>
+              <Select value={disponibilidad} onValueChange={setDisponibilidad}>
+                <SelectTrigger>
+                  <SelectValue placeholder="— Selecciona —" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Mañanas (8am-12pm)">Mañanas (8am-12pm)</SelectItem>
+                  <SelectItem value="Tardes (2pm-6pm)">Tardes (2pm-6pm)</SelectItem>
+                  <SelectItem value="Cualquier horario">Cualquier horario</SelectItem>
+                  <SelectItem value="Solo por correo">Solo por correo</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex gap-3 justify-end pt-2">
+              <Button variant="outline" onClick={() => setShowModal(false)}>Cancelar</Button>
+              <Button onClick={handleSubmitContact} disabled={sending} className="gap-2">
+                <Phone className="h-4 w-4" />
+                {sending ? "Enviando…" : "Enviar solicitud"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
