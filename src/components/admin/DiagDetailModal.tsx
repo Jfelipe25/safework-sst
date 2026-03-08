@@ -176,8 +176,21 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
           </div>
         </div>
 
-        {/* Cycle chart */}
+        {/* Cycle charts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="bg-white/[0.04] rounded-xl p-5">
+            <div className="text-[0.75rem] font-bold text-white/40 uppercase tracking-wide mb-3">Radar por ciclo PHVA</div>
+            <div className="h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart data={cycleData} cx="50%" cy="50%" outerRadius="65%">
+                  <PolarGrid stroke="rgba(255,255,255,0.12)" />
+                  <PolarAngleAxis dataKey="name" tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 600 }} />
+                  <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 9 }} tickCount={5} axisLine={false} />
+                  <Radar name="Ciclo" dataKey="value" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.12} strokeWidth={2.5} />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
           <div className="bg-white/[0.04] rounded-xl p-5">
             <div className="text-[0.75rem] font-bold text-white/40 uppercase tracking-wide mb-3">Puntaje por ciclo PHVA</div>
             <div className="h-[220px]">
