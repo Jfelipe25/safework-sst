@@ -48,6 +48,7 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
     CHECKLIST.forEach((cat) => {
       if (!map[cat.cycle]) map[cat.cycle] = { total: 0, earned: 0 };
       cat.items.forEach((item) => {
+        if (answers[item.id] === "na") return; // skip NA
         map[cat.cycle].total += item.pts;
         if (answers[item.id] === "si" || answers[item.id] === true) map[cat.cycle].earned += item.pts;
       });

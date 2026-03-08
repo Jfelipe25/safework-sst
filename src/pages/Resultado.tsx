@@ -103,14 +103,15 @@ const Resultado = () => {
 
   // Cycle (PHVA) scores
   const cycleColors: Record<string, string> = { "I. PLANEAR": "#3B82F6", "II. HACER": "#10B981", "III. VERIFICAR": "#8B5CF6", "IV. ACTUAR": "#06B6D4" };
+  const answersMap = (diag.answers || {}) as Record<string, any>;
   const cycleMap: Record<string, { total: number; earned: number }> = {};
   CHECKLIST.forEach((cat) => {
     const cycle = cat.cycle;
     if (!cycleMap[cycle]) cycleMap[cycle] = { total: 0, earned: 0 };
-    const answers = (diag.answers || {}) as Record<string, any>;
     cat.items.forEach((item) => {
+      if (answersMap[item.id] === "na") return; // skip NA
       cycleMap[cycle].total += item.pts;
-      if (answers[item.id] === "si" || answers[item.id] === true) cycleMap[cycle].earned += item.pts;
+      if (answersMap[item.id] === "si" || answersMap[item.id] === true) cycleMap[cycle].earned += item.pts;
     });
   });
   const cycleData = Object.entries(cycleMap).map(([cycle, { total, earned }]) => ({
