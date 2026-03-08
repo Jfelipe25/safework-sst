@@ -65,7 +65,7 @@ export const CHECKLIST = [
     id: "gestion",
     title: "5. Gestión del Riesgo y Contratistas",
     icon: "🤝",
-    color: "#A78BFA",
+    color: "#8B5CF6",
     items: [
       { id: "g1", text: "Se realizan acciones de promoción de la salud y prevención de enfermedades laborales.", pts: 2.5 },
       { id: "g2", text: "La empresa tiene programas de vigilancia epidemiológica para los riesgos prioritarios.", pts: 2.5 },
