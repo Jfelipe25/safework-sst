@@ -23,12 +23,15 @@ const TEMPLATES: Record<string, { asunto: string; mensaje: string }> = {
   personalizado: { asunto: "", mensaje: "" },
 };
 
+type NotifLog = { fecha: string; clientName: string; tipo: string; asunto: string };
+
 const AdminNotificaciones = ({ data, onRefresh }: { data: AdminData; onRefresh: () => void }) => {
   const { solicitudes, clients } = data;
   const [selectedClient, setSelectedClient] = useState("");
   const [tipo, setTipo] = useState("");
   const [asunto, setAsunto] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [notifLog, setNotifLog] = useState<NotifLog[]>([]);
 
   const markRead = async (id: string) => {
     await supabase.from("solicitudes").update({ leida: true }).eq("id", id);
@@ -61,6 +64,13 @@ const AdminNotificaciones = ({ data, onRefresh }: { data: AdminData; onRefresh: 
       return;
     }
     const client = clients.find(c => c.user_id === selectedClient);
+    const tipoLabel = tipo || "personalizado";
+    setNotifLog(prev => [{
+      fecha: new Date().toISOString().split("T")[0],
+      clientName: client?.nombre || "—",
+      tipo: tipoLabel,
+      asunto: asunto,
+    }, ...prev]);
     toast.success(`Notificación enviada a ${client?.nombre || "cliente"}`);
     setSelectedClient("");
     setTipo("");
@@ -109,6 +119,36 @@ const AdminNotificaciones = ({ data, onRefresh }: { data: AdminData; onRefresh: 
           <button onClick={sendNotification} className="bg-primary text-white rounded-lg px-4 py-2 text-sm font-body cursor-pointer border-none">
             📨 Enviar por correo
           </button>
+        </div>
+      </div>
+
+      {/* Historial de notificaciones enviadas */}
+      <div className="mb-8">
+        <h3 className="text-sm font-semibold text-white mb-3">📤 Historial de notificaciones enviadas</h3>
+        <div className="bg-white/[0.04] border border-white/[0.07] rounded-xl overflow-hidden">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-white/[0.06]">
+                {["Fecha", "Cliente", "Tipo", "Asunto"].map(h => (
+                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-white/40 uppercase tracking-wide">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {notifLog.length === 0 ? (
+                <tr><td colSpan={4} className="px-4 py-6 text-center text-white/28 text-sm">Sin notificaciones enviadas</td></tr>
+              ) : notifLog.map((n, i) => (
+                <tr key={i} className="border-t border-white/[0.04]">
+                  <td className="px-4 py-3 text-sm text-white/70">{n.fecha}</td>
+                  <td className="px-4 py-3 text-sm text-white/70">{n.clientName}</td>
+                  <td className="px-4 py-3">
+                    <span className="bg-primary/15 text-blue-light px-2.5 py-0.5 rounded text-xs font-semibold">{n.tipo}</span>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-white/70">{n.asunto}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 

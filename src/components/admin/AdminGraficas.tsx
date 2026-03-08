@@ -55,6 +55,19 @@ const AdminGraficas = ({ data }: { data: AdminData }) => {
     </div>
   );
 
+  // Custom tooltip without background highlight
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div style={{ background: "#0A2540", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 12, color: "white", padding: "8px 12px" }}>
+        <div style={{ marginBottom: 4, fontWeight: 600 }}>{label}</div>
+        {payload.map((p: any, i: number) => (
+          <div key={i}>{p.name || p.dataKey}: <strong>{p.value}</strong></div>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div>
       <h1 className="font-heading text-2xl text-white mb-1">Análisis estadístico</h1>
@@ -101,7 +114,7 @@ const AdminGraficas = ({ data }: { data: AdminData }) => {
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
                 <XAxis type="number" tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)" }} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: "rgba(255,255,255,0.55)" }} width={90} />
-                <Tooltip contentStyle={{ background: "#0A2540", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 12, color: "white" }} />
+                <Tooltip content={<CustomTooltip />} cursor={false} />
                 <Bar dataKey="value" fill="#3B82F6" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -115,7 +128,7 @@ const AdminGraficas = ({ data }: { data: AdminData }) => {
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
                 <XAxis dataKey="name" tick={{ fontSize: 9, fill: "rgba(255,255,255,0.45)" }} angle={-30} textAnchor="end" height={60} />
                 <YAxis domain={[0, 100]} tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)" }} />
-                <Tooltip contentStyle={{ background: "#0A2540", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 12, color: "white" }} />
+                <Tooltip content={<CustomTooltip />} cursor={false} />
                 <Bar dataKey="score" fill="#60A5FA" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
