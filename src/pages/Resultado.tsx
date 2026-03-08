@@ -176,24 +176,46 @@ const Resultado = () => {
 
           {/* Plan recomendado */}
           <div className="bg-secondary rounded-2xl p-6 text-left mb-8">
-            <h3 className="font-heading text-lg font-bold text-foreground mb-4">🚀 Plan Integral SST — Básico + Implementación</h3>
-            <ul className="space-y-2.5 mb-0">
-              {[
-                "Documentación completa del SG-SST",
-                "Implementación guiada paso a paso",
-                "Conformación y capacitación del COPASST",
-                "Elaboración de matriz de peligros y riesgos GTC-45",
-                "Plan de emergencias y simulacros",
-                "Programa de capacitación a trabajadores",
-                "Acompañamiento en mediciones higiénicas",
-                "Seguimiento mensual durante 12 meses",
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-2 text-sm text-foreground">
-                  <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                  {item}
-                </li>
-              ))}
-            </ul>
+            {level === "high" ? (
+              <>
+                <h3 className="font-heading text-lg font-bold text-foreground mb-4">📦 Plan Básico SST — Mantenimiento</h3>
+                <ul className="space-y-2.5 mb-0">
+                  {[
+                    "Actualización anual de documentación SG-SST",
+                    "Auditoría interna semestral",
+                    "Capacitaciones trimestrales al personal",
+                    "Soporte legal ante inspecciones del Ministerio",
+                    "Actualización de matriz de riesgos GTC-45",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-sm text-foreground">
+                      <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <>
+                <h3 className="font-heading text-lg font-bold text-foreground mb-4">🚀 Plan Integral SST — Básico + Implementación</h3>
+                <ul className="space-y-2.5 mb-0">
+                  {[
+                    "Documentación completa del SG-SST",
+                    "Implementación guiada paso a paso",
+                    "Conformación y capacitación del COPASST",
+                    "Elaboración de matriz de peligros y riesgos GTC-45",
+                    "Plan de emergencias y simulacros",
+                    "Programa de capacitación a trabajadores",
+                    "Acompañamiento en mediciones higiénicas",
+                    "Seguimiento mensual durante 12 meses",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-sm text-foreground">
+                      <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
           </div>
 
           <div className="flex gap-4 justify-center flex-wrap">
