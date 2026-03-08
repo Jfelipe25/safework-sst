@@ -156,10 +156,10 @@ export function downloadDiagHTML(diag: any, client: any) {
     }).join('');
     return `<div style="margin-bottom:16px;break-inside:avoid">
       <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:9px 14px;border-radius:5px;border-left:4px solid ${c};margin-bottom:5px">
-        <span style="font-size:14px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
+        <span style="font-size:15.5px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
         <div style="text-align:right">
-          <span style="font-size:14px;font-weight:700;color:${c}">${s}%</span>
-          <span style="font-size:11px;color:#9ca3af;margin-left:8px">${answered}/${cat.items.length} ítems · ${ptsEarned.toFixed(1)}/${ptsTotal} pts</span>
+          <span style="font-size:15.5px;font-weight:700;color:${c}">${s}%</span>
+          <span style="font-size:12.5px;color:#9ca3af;margin-left:8px">${answered}/${cat.items.length} ítems · ${ptsEarned.toFixed(1)}/${ptsTotal} pts</span>
         </div>
       </div>
       <table style="width:100%;border-collapse:collapse">${rows}</table>
