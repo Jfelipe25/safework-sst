@@ -202,8 +202,8 @@ export function downloadDiagHTML(diag: any, client: any) {
   <h3 style="font-size:17px;font-weight:700;border-bottom:2px solid #1E3A8A;padding-bottom:6px;margin-bottom:14px;color:#0A2540">Detalle por categoría</h3>
   ${catRows}
   <div style="margin-top:24px;padding:13px 16px;background:#eff6ff;border-radius:6px;border-left:4px solid #3B82F6;font-size:12px;color:#1E3A8A">
-    Informe generado por <strong>SafeWork SST Consultoría</strong> &nbsp;·&nbsp; ${new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
-    &nbsp;·&nbsp; Basado en <strong>Decreto 1072/2015</strong> y <strong>Resolución 0312/2019</strong>.
+    <span style="font-size:13.5px">Informe generado por <strong>SafeWork SST Consultoría</strong> &nbsp;·&nbsp; ${new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
+    &nbsp;·&nbsp; Basado en <strong>Decreto 1072/2015</strong> y <strong>Resolución 0312/2019</strong>.</span>
   </div>
 </div>
 </body></html>`;
