@@ -225,8 +225,10 @@ export function downloadDiagHTML(diag: any, client: any) {
 <title>Diagnóstico SST — ${(u?.empresa || '').replace(/</g, '&lt;')}</title>
 <style>
   body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;color:#0A2540;font-size:14.5px}
-  @page{size:A4;margin:0}
+  @page{size:A4;margin:15mm 10mm}
   @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  .cycle-group{page-break-inside:avoid;break-inside:avoid}
+  .cat-block{page-break-inside:avoid;break-inside:avoid}
 </style>
 </head><body>
 <div style="background:linear-gradient(135deg,#0A2540,#1E3A8A);color:white;padding:28px 40px">
