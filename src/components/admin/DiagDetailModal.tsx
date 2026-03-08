@@ -137,11 +137,11 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
                     tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 600 }}
                     tickLine={false}
                   />
-                  <PolarRadiusAxis
+                   <PolarRadiusAxis
                     angle={90}
                     domain={[0, 100]}
                     tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 9 }}
-                    tickCount={5}
+                    tickCount={6}
                     axisLine={false}
                   />
                   <Radar name="Cumplimiento" dataKey="value" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.12} strokeWidth={2.5} dot={renderRadarDot} />
