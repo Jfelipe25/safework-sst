@@ -129,7 +129,7 @@ export function downloadDiagHTML(diag: any, client: any) {
   const cycleVals = cycleData.map(c => c.value);
   const cycleLabels = cycleData.map(c => c.name);
   const cycleColors = cycleData.map(c => c.color);
-  const cycleRadarSVG = generateRadarSVG(cycleVals, cycleLabels, cycleColors, 480, 360);
+  const cycleRadarSVG = generateRadarSVG(cycleVals, cycleLabels, cycleColors, 380);
   const cycleBarSVG = generateBarSVG(cycleVals, cycleLabels, cycleColors, 480, 300);
 
   // Color legend table grouped by cycle
