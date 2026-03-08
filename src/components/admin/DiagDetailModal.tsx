@@ -212,23 +212,39 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
           </div>
         </div>
 
-        {/* Color legend */}
+        {/* Color legend grouped by cycle */}
         <div className="bg-white/[0.04] rounded-xl p-4 mb-5 border border-white/[0.07]">
           <div className="text-[0.72rem] font-bold text-white/35 uppercase tracking-wide mb-2.5">Referencia de categorías</div>
-          <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
-            {CHECKLIST.map((cat, i) => {
-              const s = catScores[cat.id] || 0;
-              const vc = s >= 80 ? '#34D399' : s >= 50 ? '#FBBF24' : '#F87171';
-              const ptsTotal = cat.items.reduce((a, it) => a + it.pts, 0);
-              const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
+          <div className="space-y-3">
+            {Object.entries(CYCLE_LABELS).map(([cycleKey, cycleLabel]) => {
+              const cycleCats = CHECKLIST.filter(cat => cat.cycle === cycleKey);
+              if (cycleCats.length === 0) return null;
+              const cColor = cycleColors[cycleKey] || "#888";
               return (
-                <div key={cat.id} className="flex items-center gap-2 py-1.5 px-2 bg-white/[0.03] rounded-lg">
-                  <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: CAT_HEX[i], boxShadow: `0 0 5px ${CAT_HEX[i]}80` }} />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-[0.74rem] text-white/75 font-semibold truncate">{cat.title.split('.')[1]?.trim()}</div>
-                    <div className="text-[0.68rem] text-white/35">{ptsEarned.toFixed(1)}/{ptsTotal} pts</div>
+                <div key={cycleKey}>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: cColor }} />
+                    <span className="text-[0.7rem] font-bold uppercase tracking-wider" style={{ color: cColor }}>{cycleKey} — {cycleLabel}</span>
                   </div>
-                  <strong className="text-[0.82rem] flex-shrink-0" style={{ color: vc }}>{s}%</strong>
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 pl-2 border-l-2" style={{ borderColor: cColor }}>
+                    {cycleCats.map((cat) => {
+                      const i = CHECKLIST.indexOf(cat);
+                      const s = catScores[cat.id] || 0;
+                      const vc = s >= 80 ? '#34D399' : s >= 50 ? '#FBBF24' : '#F87171';
+                      const ptsTotal = cat.items.reduce((a, it) => a + it.pts, 0);
+                      const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
+                      return (
+                        <div key={cat.id} className="flex items-center gap-2 py-1.5 px-2 bg-white/[0.03] rounded-lg">
+                          <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: CAT_HEX[i], boxShadow: `0 0 5px ${CAT_HEX[i]}80` }} />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-[0.74rem] text-white/75 font-semibold truncate">{cat.title.split('.')[1]?.trim()}</div>
+                            <div className="text-[0.68rem] text-white/35">{ptsEarned.toFixed(1)}/{ptsTotal} pts</div>
+                          </div>
+                          <strong className="text-[0.82rem] flex-shrink-0" style={{ color: vc }}>{s}%</strong>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               );
             })}

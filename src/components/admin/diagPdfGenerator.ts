@@ -120,37 +120,49 @@ export function downloadDiagHTML(diag: any, client: any) {
   const cycleRadarSVG = generateRadarSVG(cycleVals, cycleLabels, cycleColors, 480, 360);
   const cycleBarSVG = generateBarSVG(cycleVals, cycleLabels, cycleColors, 480, 300);
 
-  // Color legend table
+  // Color legend table grouped by cycle
   const colorLegendHTML = `
     <div style="margin-bottom:20px">
       <div style="font-size:15px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Referencia de categorías</div>
-      <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden">
-        <thead><tr style="background:#f8fafc">
-          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Color</th>
-          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Categoría</th>
-          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Ítems OK</th>
-          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts obtenidos</th>
-          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts posibles</th>
-          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Cumplimiento</th>
-        </tr></thead>
-        <tbody>
-        ${CHECKLIST.map((cat, i) => {
-          const s = catScores[cat.id] || 0;
-          const sc = s >= 80 ? '#059669' : s >= 50 ? '#D97706' : '#DC2626';
-          const ptsT = cat.items.reduce((a, it) => a + it.pts, 0);
-          const ptsE = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
-          const answered = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length;
-          return `<tr style="border-bottom:1px solid #f3f4f6">
-            <td style="padding:7px 12px;text-align:center"><div style="width:16px;height:16px;border-radius:4px;background:${CAT_HEX[i]};display:inline-block"></div></td>
-            <td style="padding:8px 12px;font-size:14.5px;color:#0A2540;font-weight:600">${cat.icon} ${cat.title.split('.')[1]?.trim()}</td>
-            <td style="padding:8px 12px;font-size:14.5px;text-align:center;color:#374151">${answered}/${cat.items.length}</td>
-            <td style="padding:8px 12px;font-size:14.5px;text-align:center;color:${sc};font-weight:700">${ptsE.toFixed(1)}</td>
-            <td style="padding:8px 12px;font-size:14.5px;text-align:center;color:#6b7280">${ptsT}</td>
-            <td style="padding:8px 12px;font-size:15px;text-align:center;color:${sc};font-weight:700">${s}%</td>
-          </tr>`;
-        }).join('')}
-        </tbody>
-      </table>
+      ${Object.entries(CYCLE_LABELS).map(([cycleKey, cycleLabel]) => {
+        const cycleCats = CHECKLIST.filter(cat => cat.cycle === cycleKey);
+        if (cycleCats.length === 0) return '';
+        const cColor = CYCLE_HEX[cycleKey] || '#888';
+        return `<div style="margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+            <div style="width:8px;height:8px;border-radius:50%;background:${cColor}"></div>
+            <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:${cColor}">${cycleKey} — ${cycleLabel}</span>
+          </div>
+          <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden;border-left:3px solid ${cColor}">
+            <thead><tr style="background:#f8fafc">
+              <th style="padding:7px 10px;font-size:13px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Color</th>
+              <th style="padding:7px 10px;font-size:13px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Categoría</th>
+              <th style="padding:7px 10px;font-size:13px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Ítems OK</th>
+              <th style="padding:7px 10px;font-size:13px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts obtenidos</th>
+              <th style="padding:7px 10px;font-size:13px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts posibles</th>
+              <th style="padding:7px 10px;font-size:13px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Cumplimiento</th>
+            </tr></thead>
+            <tbody>
+            ${cycleCats.map((cat) => {
+              const i = CHECKLIST.indexOf(cat);
+              const s = catScores[cat.id] || 0;
+              const sc = s >= 80 ? '#059669' : s >= 50 ? '#D97706' : '#DC2626';
+              const ptsT = cat.items.reduce((a, it) => a + it.pts, 0);
+              const ptsE = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
+              const answered = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length;
+              return `<tr style="border-bottom:1px solid #f3f4f6">
+                <td style="padding:6px 10px;text-align:center"><div style="width:14px;height:14px;border-radius:3px;background:${CAT_HEX[i]};display:inline-block"></div></td>
+                <td style="padding:7px 10px;font-size:14px;color:#0A2540;font-weight:600">${cat.icon} ${cat.title.split('.')[1]?.trim()}</td>
+                <td style="padding:7px 10px;font-size:14px;text-align:center;color:#374151">${answered}/${cat.items.length}</td>
+                <td style="padding:7px 10px;font-size:14px;text-align:center;color:${sc};font-weight:700">${ptsE.toFixed(1)}</td>
+                <td style="padding:7px 10px;font-size:14px;text-align:center;color:#6b7280">${ptsT}</td>
+                <td style="padding:7px 10px;font-size:14.5px;text-align:center;color:${sc};font-weight:700">${s}%</td>
+              </tr>`;
+            }).join('')}
+            </tbody>
+          </table>
+        </div>`;
+      }).join('')}
     </div>`;
 
   // Meta grid
@@ -187,7 +199,7 @@ export function downloadDiagHTML(diag: any, client: any) {
           <td style="padding:7px 12px;font-size:13.5px;text-align:center;color:#6b7280">${item.pts} pts</td>
         </tr>`;
       }).join('');
-      return `<div style="margin-bottom:16px;break-inside:avoid">
+      return `<div style="margin-bottom:16px;page-break-inside:avoid;break-inside:avoid">
         <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:9px 14px;border-radius:5px;border-left:4px solid ${c};margin-bottom:5px">
           <span style="font-size:15.5px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
           <div style="text-align:right">
@@ -199,7 +211,7 @@ export function downloadDiagHTML(diag: any, client: any) {
       </div>`;
     }).join('');
 
-    return `<div style="margin-bottom:20px">
+    return `<div style="margin-bottom:20px;page-break-before:auto">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid ${cColor}">
         <div style="width:10px;height:10px;border-radius:50%;background:${cColor}"></div>
         <span style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:${cColor}">${cycleKey} — ${cycleLabel}</span>
@@ -213,8 +225,10 @@ export function downloadDiagHTML(diag: any, client: any) {
 <title>Diagnóstico SST — ${(u?.empresa || '').replace(/</g, '&lt;')}</title>
 <style>
   body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;color:#0A2540;font-size:14.5px}
-  @page{size:A4;margin:0}
+  @page{size:A4;margin:15mm 10mm}
   @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  .cycle-group{page-break-inside:avoid;break-inside:avoid}
+  .cat-block{page-break-inside:avoid;break-inside:avoid}
 </style>
 </head><body>
 <div style="background:linear-gradient(135deg,#0A2540,#1E3A8A);color:white;padding:28px 40px">
