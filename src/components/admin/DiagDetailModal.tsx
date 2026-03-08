@@ -235,44 +235,59 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
           </div>
         </div>
 
-        {/* Category detail */}
+        {/* Category detail grouped by cycle */}
         <div className="text-[0.75rem] font-bold text-white/35 uppercase tracking-wider mb-3">Detalle por categoría — ítems marcados y fallos</div>
-        <div className="space-y-3">
-          {CHECKLIST.map(cat => {
-            const s = catScores[cat.id] || 0;
-            const c = s >= 80 ? "#059669" : s >= 50 ? "#D97706" : "#DC2626";
-            const ptsTotal = cat.items.reduce((a, i) => a + i.pts, 0);
-            const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
-            const weight = Math.round(ptsTotal / TOTAL_PTS * 100);
+        <div className="space-y-4">
+          {Object.entries(CYCLE_LABELS).map(([cycleKey, cycleLabel]) => {
+            const cycleCats = CHECKLIST.filter(cat => cat.cycle === cycleKey);
+            if (cycleCats.length === 0) return null;
+            const cColor = cycleColors[cycleKey] || "#888";
             return (
-              <div key={cat.id} className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.06]">
-                <div className="flex justify-between items-center mb-1 flex-wrap gap-1">
-                  <span className="text-sm font-semibold text-white/90">{cat.icon} {cat.title}</span>
-                  <div className="flex gap-3 items-center">
-                    <span className="text-[0.7rem] text-white/40">{cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length}/{cat.items.length} ítems</span>
-                    <span className="text-[0.75rem] text-white/45">{ptsEarned.toFixed(1)}/{ptsTotal} pts</span>
-                    <span className="text-[0.7rem] text-white/35">Peso: {weight}%</span>
-                    <strong className="text-base" style={{ color: c }}>{s}%</strong>
-                  </div>
+              <div key={cycleKey}>
+                <div className="flex items-center gap-2 mb-2 mt-1">
+                  <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cColor }} />
+                  <span className="text-[0.8rem] font-bold uppercase tracking-wider" style={{ color: cColor }}>{cycleKey} — {cycleLabel}</span>
                 </div>
-                <div className="h-[7px] bg-white/[0.07] rounded overflow-hidden mb-2">
-                  <div className="h-full rounded" style={{ width: `${s}%`, background: c }} />
+                <div className="space-y-3 pl-2 border-l-2" style={{ borderColor: cColor }}>
+                  {cycleCats.map(cat => {
+                    const s = catScores[cat.id] || 0;
+                    const c = s >= 80 ? "#059669" : s >= 50 ? "#D97706" : "#DC2626";
+                    const ptsTotal = cat.items.reduce((a, i) => a + i.pts, 0);
+                    const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
+                    const weight = Math.round(ptsTotal / TOTAL_PTS * 100);
+                    return (
+                      <div key={cat.id} className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.06]">
+                        <div className="flex justify-between items-center mb-1 flex-wrap gap-1">
+                          <span className="text-sm font-semibold text-white/90">{cat.icon} {cat.title}</span>
+                          <div className="flex gap-3 items-center">
+                            <span className="text-[0.7rem] text-white/40">{cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length}/{cat.items.length} ítems</span>
+                            <span className="text-[0.75rem] text-white/45">{ptsEarned.toFixed(1)}/{ptsTotal} pts</span>
+                            <span className="text-[0.7rem] text-white/35">Peso: {weight}%</span>
+                            <strong className="text-base" style={{ color: c }}>{s}%</strong>
+                          </div>
+                        </div>
+                        <div className="h-[7px] bg-white/[0.07] rounded overflow-hidden mb-2">
+                          <div className="h-full rounded" style={{ width: `${s}%`, background: c }} />
+                        </div>
+                        {cat.items.map(item => {
+                          const ans = answers[item.id];
+                          const ok = ans === "si" || ans === true;
+                          const na = ans === "na";
+                          return (
+                            <div key={item.id} className={`flex gap-2 py-1 border-b border-white/[0.04] items-start ${na ? "opacity-40" : ""}`}>
+                              <span className="flex-shrink-0 text-sm mt-0.5">{na ? "⊘" : ok ? "✅" : "❌"}</span>
+                              <span className={`text-[0.81rem] flex-1 leading-relaxed ${na ? "text-white/30 italic" : ok ? "text-white/80" : "text-white/40"}`}>
+                                {item.text}
+                                {na && <span className="ml-2 text-[0.65rem] text-white/25">(No aplica)</span>}
+                              </span>
+                              <span className={`flex-shrink-0 text-[0.72rem] font-bold whitespace-nowrap ${na ? "text-white/20" : ok ? "text-emerald-400" : "text-red-400"}`}>{item.pts} pts</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })}
                 </div>
-                {cat.items.map(item => {
-                  const ans = answers[item.id];
-                  const ok = ans === "si" || ans === true;
-                  const na = ans === "na";
-                  return (
-                    <div key={item.id} className={`flex gap-2 py-1 border-b border-white/[0.04] items-start ${na ? "opacity-40" : ""}`}>
-                      <span className="flex-shrink-0 text-sm mt-0.5">{na ? "⊘" : ok ? "✅" : "❌"}</span>
-                      <span className={`text-[0.81rem] flex-1 leading-relaxed ${na ? "text-white/30 italic" : ok ? "text-white/80" : "text-white/40"}`}>
-                        {item.text}
-                        {na && <span className="ml-2 text-[0.65rem] text-white/25">(No aplica)</span>}
-                      </span>
-                      <span className={`flex-shrink-0 text-[0.72rem] font-bold whitespace-nowrap ${na ? "text-white/20" : ok ? "text-emerald-400" : "text-red-400"}`}>{item.pts} pts</span>
-                    </div>
-                  );
-                })}
               </div>
             );
           })}
