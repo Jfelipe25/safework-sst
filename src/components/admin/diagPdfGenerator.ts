@@ -1,15 +1,15 @@
-import { CHECKLIST } from "@/data/checklist";
+import { CHECKLIST, CYCLE_LABELS } from "@/data/checklist";
 import { toast } from "sonner";
 
 const CAT_HEX = ['#3B82F6','#6366F1','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4'];
+const CYCLE_HEX: Record<string, string> = { "I. PLANEAR": "#3B82F6", "II. HACER": "#10B981", "III. VERIFICAR": "#8B5CF6", "IV. ACTUAR": "#06B6D4" };
 const TOTAL_PTS = CHECKLIST.reduce((s, cat) => s + cat.items.reduce((ss, it) => ss + it.pts, 0), 0);
-
 const SHORT_LABELS = ['Recursos', 'Gestión Integral', 'Gestión Salud', 'Peligros/Riesgos', 'Amenazas', 'Verificación', 'Mejoramiento'];
 
-function generateRadarSVG(catVals: number[], labels: string[], width = 520, height = 380): string {
+function generateRadarSVG(vals: number[], labels: string[], colors: string[] | null, width = 520, height = 380): string {
   const cx = width / 2, cy = height / 2 + 5;
   const r = Math.min(cx, cy) - 70;
-  const n = catVals.length;
+  const n = vals.length;
   const angleStep = (2 * Math.PI) / n;
   const startAngle = -Math.PI / 2;
 
@@ -33,12 +33,12 @@ function generateRadarSVG(catVals: number[], labels: string[], width = 520, heig
     axisLines += `<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#374151" font-weight="600">${labels[i]}</text>`;
   }
 
-  const points = catVals.map((v, i) => getPoint(i, v));
+  const points = vals.map((v, i) => getPoint(i, v));
   const poly = points.map(p => `${p.x},${p.y}`).join(' ');
   const dataPath = `<polygon points="${poly}" fill="rgba(59,130,246,0.12)" stroke="#3B82F6" stroke-width="2"/>`;
 
   const dots = points.map((p, i) =>
-    `<circle cx="${p.x}" cy="${p.y}" r="6" fill="${CAT_HEX[i]}" stroke="white" stroke-width="2"/>`
+    `<circle cx="${p.x}" cy="${p.y}" r="6" fill="${colors ? colors[i] : '#3B82F6'}" stroke="white" stroke-width="2"/>`
   ).join('');
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
@@ -47,22 +47,21 @@ function generateRadarSVG(catVals: number[], labels: string[], width = 520, heig
   </svg>`;
 }
 
-function generateBarSVG(catVals: number[], labels: string[], width = 520, height = 340): string {
+function generateBarSVG(vals: number[], labels: string[], colors: string[], width = 520, height = 340): string {
   const margin = { top: 25, right: 20, bottom: 80, left: 45 };
   const w = width - margin.left - margin.right;
   const h = height - margin.top - margin.bottom;
-  const n = catVals.length;
+  const n = vals.length;
   const barW = Math.min(w / n * 0.6, 50);
   const gap = w / n;
 
   let bars = '';
   for (let i = 0; i < n; i++) {
     const x = margin.left + i * gap + (gap - barW) / 2;
-    const barH = (catVals[i] / 100) * h;
+    const barH = (vals[i] / 100) * h;
     const y = margin.top + h - barH;
-    bars += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="${CAT_HEX[i]}" rx="4"/>`;
-    bars += `<text x="${x + barW/2}" y="${y - 6}" text-anchor="middle" font-size="11" fill="#374151" font-weight="700">${catVals[i]}%</text>`;
-    // Rotated X label
+    bars += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="${colors[i]}" rx="4"/>`;
+    bars += `<text x="${x + barW/2}" y="${y - 6}" text-anchor="middle" font-size="11" fill="#374151" font-weight="700">${vals[i]}%</text>`;
     const lx = margin.left + i * gap + gap / 2;
     const ly = margin.top + h + 12;
     bars += `<text x="${lx}" y="${ly}" text-anchor="end" font-size="10.5" fill="#374151" font-weight="500" transform="rotate(-35 ${lx} ${ly})">${labels[i]}</text>`;
@@ -81,6 +80,24 @@ function generateBarSVG(catVals: number[], labels: string[], width = 520, height
   </svg>`;
 }
 
+function computeCycleData(answers: Record<string, any>) {
+  const map: Record<string, { total: number; earned: number }> = {};
+  CHECKLIST.forEach((cat) => {
+    if (!map[cat.cycle]) map[cat.cycle] = { total: 0, earned: 0 };
+    cat.items.forEach((item) => {
+      if (answers[item.id] === "na") return;
+      map[cat.cycle].total += item.pts;
+      if (answers[item.id] === "si" || answers[item.id] === true) map[cat.cycle].earned += item.pts;
+    });
+  });
+  return Object.entries(map).map(([cycle, { total, earned }]) => ({
+    name: cycle.replace(/^[IVX]+\.\s*/, ""),
+    fullKey: cycle,
+    value: total > 0 ? Math.round((earned / total) * 100) : 0,
+    color: CYCLE_HEX[cycle] || "#888",
+  }));
+}
+
 export function downloadDiagHTML(diag: any, client: any) {
   const d = diag;
   const u = client;
@@ -92,8 +109,16 @@ export function downloadDiagHTML(diag: any, client: any) {
   const catVals = CHECKLIST.map(c => catScores[c.id] || 0);
   const catLabels = SHORT_LABELS;
 
-  const radarSVG = generateRadarSVG(catVals, catLabels);
-  const barSVG = generateBarSVG(catVals, catLabels);
+  const radarSVG = generateRadarSVG(catVals, catLabels, CAT_HEX);
+  const barSVG = generateBarSVG(catVals, catLabels, CAT_HEX);
+
+  // Cycle PHVA data
+  const cycleData = computeCycleData(answers);
+  const cycleVals = cycleData.map(c => c.value);
+  const cycleLabels = cycleData.map(c => c.name);
+  const cycleColors = cycleData.map(c => c.color);
+  const cycleRadarSVG = generateRadarSVG(cycleVals, cycleLabels, cycleColors, 480, 360);
+  const cycleBarSVG = generateBarSVG(cycleVals, cycleLabels, cycleColors, 480, 300);
 
   // Color legend table
   const colorLegendHTML = `
@@ -113,7 +138,7 @@ export function downloadDiagHTML(diag: any, client: any) {
           const s = catScores[cat.id] || 0;
           const sc = s >= 80 ? '#059669' : s >= 50 ? '#D97706' : '#DC2626';
           const ptsT = cat.items.reduce((a, it) => a + it.pts, 0);
-      const ptsE = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
+          const ptsE = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
           const answered = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length;
           return `<tr style="border-bottom:1px solid #f3f4f6">
             <td style="padding:7px 12px;text-align:center"><div style="width:16px;height:16px;border-radius:4px;background:${CAT_HEX[i]};display:inline-block"></div></td>
@@ -146,11 +171,13 @@ export function downloadDiagHTML(diag: any, client: any) {
     const ptsTotal = cat.items.reduce((a, i) => a + i.pts, 0);
     const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
     const answered = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length;
+    const naCount = cat.items.filter(it => answers[it.id] === "na").length;
     const rows = cat.items.map(item => {
       const ok = answers[item.id] === "si" || answers[item.id] === true;
-      return `<tr style="border-bottom:1px solid #f3f4f6">
-        <td style="padding:7px 12px;font-size:14px;color:#374151">${item.text}</td>
-        <td style="padding:7px 12px;font-size:14.5px;text-align:center;color:${ok ? '#059669' : '#DC2626'};font-weight:700">${ok ? '✓' : '✗'}</td>
+      const na = answers[item.id] === "na";
+      return `<tr style="border-bottom:1px solid #f3f4f6;${na ? 'opacity:0.4' : ''}">
+        <td style="padding:7px 12px;font-size:14px;color:#374151">${item.text}${na ? ' <em style="color:#9ca3af;font-size:12px">(N/A)</em>' : ''}</td>
+        <td style="padding:7px 12px;font-size:14.5px;text-align:center;color:${na ? '#9ca3af' : ok ? '#059669' : '#DC2626'};font-weight:700">${na ? '⊘' : ok ? '✓' : '✗'}</td>
         <td style="padding:7px 12px;font-size:13.5px;text-align:center;color:#6b7280">${item.pts} pts</td>
       </tr>`;
     }).join('');
@@ -159,7 +186,7 @@ export function downloadDiagHTML(diag: any, client: any) {
         <span style="font-size:15.5px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
         <div style="text-align:right">
           <span style="font-size:15.5px;font-weight:700;color:${c}">${s}%</span>
-          <span style="font-size:12.5px;color:#9ca3af;margin-left:8px">${answered}/${cat.items.length} ítems · ${ptsEarned.toFixed(1)}/${ptsTotal} pts</span>
+          <span style="font-size:12.5px;color:#9ca3af;margin-left:8px">${answered}/${cat.items.length} ítems${naCount ? ` · ${naCount} N/A` : ''} · ${ptsEarned.toFixed(1)}/${ptsTotal} pts</span>
         </div>
       </div>
       <table style="width:100%;border-collapse:collapse">${rows}</table>
@@ -188,6 +215,20 @@ export function downloadDiagHTML(diag: any, client: any) {
     </div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px">${metaHTML}</div>
+
+  <!-- Cycle PHVA charts -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+    <div style="background:#f8fafc;padding:14px;border-radius:8px;border:1px solid #e5e7eb;text-align:center">
+      <div style="font-size:13px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:10px;letter-spacing:0.4px">Radar por ciclo PHVA</div>
+      ${cycleRadarSVG}
+    </div>
+    <div style="background:#f8fafc;padding:14px;border-radius:8px;border:1px solid #e5e7eb;text-align:center">
+      <div style="font-size:13px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:10px;letter-spacing:0.4px">Puntaje por ciclo PHVA</div>
+      ${cycleBarSVG}
+    </div>
+  </div>
+
+  <!-- Category charts -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
     <div style="background:#f8fafc;padding:14px;border-radius:8px;border:1px solid #e5e7eb;text-align:center">
       <div style="font-size:13px;color:#6b7280;font-weight:700;text-transform:uppercase;margin-bottom:10px;letter-spacing:0.4px">Radar de cumplimiento</div>
@@ -198,6 +239,7 @@ export function downloadDiagHTML(diag: any, client: any) {
       ${barSVG}
     </div>
   </div>
+
   ${colorLegendHTML}
   <h3 style="font-size:17px;font-weight:700;border-bottom:2px solid #1E3A8A;padding-bottom:6px;margin-bottom:14px;color:#0A2540">Detalle por categoría</h3>
   ${catRows}
