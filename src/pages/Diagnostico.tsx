@@ -91,34 +91,46 @@ const Diagnostico = () => {
             <span className="font-heading text-xl font-bold text-corp whitespace-nowrap">{pct}%</span>
           </div>
 
-          {/* Categories */}
-          {CHECKLIST.map((cat) => (
-            <div key={cat.id} className="mb-8">
-              <h3 className="font-heading text-base text-navy mb-3 pb-2 border-b border-border flex items-center gap-2">
-                {cat.icon} {cat.title}
-                <span className="ml-auto text-xs font-body font-semibold" style={{ color: cat.color }}>
-                  {getCatTotalPts(cat.id)} pts
-                </span>
-              </h3>
-              {cat.items.map((item) => (
-                <label
-                  key={item.id}
-                  className={`flex gap-3 p-3 rounded-lg mb-1 border-[1.5px] transition-all cursor-pointer items-start ${
-                    answers[item.id] ? "bg-success/5 border-success/20" : "border-transparent hover:bg-blue-pale hover:border-primary/15"
-                  }`}
-                >
-                  <input
-                    type="checkbox"
-                    className="w-[17px] h-[17px] min-w-[17px] mt-0.5 accent-primary cursor-pointer"
-                    checked={!!answers[item.id]}
-                    onChange={() => toggleItem(item.id)}
-                  />
-                  <span className="text-sm text-muted-foreground leading-relaxed flex-1">{item.text}</span>
-                  <span className="text-xs font-semibold text-primary min-w-[42px] text-right pt-0.5">{item.pts} pts</span>
-                </label>
-              ))}
-            </div>
-          ))}
+          {/* Categories grouped by PHVA cycle */}
+          {Object.keys(CYCLE_LABELS).map((cycle) => {
+            const cats = CHECKLIST.filter((c) => c.cycle === cycle);
+            if (cats.length === 0) return null;
+            return (
+              <div key={cycle} className="mb-10">
+                <h2 className="font-heading text-lg text-corp mb-4 pb-2 border-b-2 border-primary/20">
+                  {cycle} — {CYCLE_LABELS[cycle]}
+                </h2>
+                {cats.map((cat) => (
+                  <div key={cat.id} className="mb-8">
+                    <h3 className="font-heading text-base text-navy mb-3 pb-2 border-b border-border flex items-center gap-2">
+                      {cat.icon} {cat.title}
+                      <span className="ml-auto text-xs font-body font-semibold" style={{ color: cat.color }}>
+                        {getCatTotalPts(cat.id)} pts
+                      </span>
+                    </h3>
+                    {cat.items.map((item) => (
+                      <label
+                        key={item.id}
+                        className={`flex gap-3 p-3 rounded-lg mb-1 border-[1.5px] transition-all cursor-pointer items-start ${
+                          answers[item.id] ? "bg-success/5 border-success/20" : "border-transparent hover:bg-blue-pale hover:border-primary/15"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="w-[17px] h-[17px] min-w-[17px] mt-0.5 accent-primary cursor-pointer"
+                          checked={!!answers[item.id]}
+                          onChange={() => toggleItem(item.id)}
+                        />
+                        <span className="text-xs font-bold text-primary/60 min-w-[42px] pt-0.5">{item.id}</span>
+                        <span className="text-sm text-muted-foreground leading-relaxed flex-1">{item.text}</span>
+                        <span className="text-xs font-semibold text-primary min-w-[42px] text-right pt-0.5">{item.pts} pts</span>
+                      </label>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            );
+          })}
 
           <Button size="lg" className="w-full" onClick={handleSubmit} disabled={submitting}>
             {submitting ? "Guardando..." : "Ver mi resultado →"}
