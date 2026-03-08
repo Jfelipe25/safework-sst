@@ -175,7 +175,7 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
             const s = catScores[cat.id] || 0;
             const c = s >= 80 ? "#059669" : s >= 50 ? "#D97706" : "#DC2626";
             const ptsTotal = cat.items.reduce((a, i) => a + i.pts, 0);
-            const ptsEarned = cat.items.filter(it => answers[it.id]).reduce((a, it) => a + it.pts, 0);
+            const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
             const weight = Math.round(ptsTotal / TOTAL_PTS * 100);
             return (
               <div key={cat.id} className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.06]">
