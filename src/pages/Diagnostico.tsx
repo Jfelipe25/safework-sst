@@ -1,19 +1,35 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { CHECKLIST, getCatTotalPts, CYCLE_LABELS } from "@/data/checklist";
+import { CHECKLIST, getCatTotalPts, CYCLE_LABELS, itemApplies } from "@/data/checklist";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-type Answer = "si" | "no";
+type Answer = "si" | "no" | "na";
 
 const Diagnostico = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [submitting, setSubmitting] = useState(false);
+
+  const trabajadores = profile?.trabajadores || null;
+  const riesgo = profile?.riesgo || null;
+
+  // Determine which items apply based on profile
+  const applicableItems = useMemo(() => {
+    const set = new Set<string>();
+    CHECKLIST.forEach((cat) => {
+      cat.items.forEach((item) => {
+        if (itemApplies(item, trabajadores, riesgo)) {
+          set.add(item.id);
+        }
+      });
+    });
+    return set;
+  }, [trabajadores, riesgo]);
 
   const totalItems = CHECKLIST.reduce((s, c) => s + c.items.length, 0);
   const answered = Object.keys(answers).length;
@@ -31,21 +47,25 @@ const Diagnostico = () => {
 
     setSubmitting(true);
     let earned = 0;
+    let totalApplicable = 0;
     const catScores: Record<string, number> = {};
 
     CHECKLIST.forEach((cat) => {
       let catEarned = 0;
-      const catTotal = getCatTotalPts(cat.id);
+      let catTotal = 0;
       cat.items.forEach((item) => {
+        if (answers[item.id] === "na") return; // skip NA items
+        catTotal += item.pts;
+        totalApplicable += item.pts;
         if (answers[item.id] === "si") {
           catEarned += item.pts;
           earned += item.pts;
         }
       });
-      catScores[cat.id] = Math.round((catEarned / catTotal) * 100);
+      catScores[cat.id] = catTotal > 0 ? Math.round((catEarned / catTotal) * 100) : 100;
     });
 
-    const score = Math.round(earned);
+    const score = totalApplicable > 0 ? Math.round((earned / totalApplicable) * 100) : 0;
     const level = score >= 86 ? "high" : score >= 60 ? "medium" : "low";
 
     const { data, error } = await supabase.from("diagnostics").insert({
@@ -71,6 +91,12 @@ const Diagnostico = () => {
     navigate(`/dashboard/resultado/${data.id}`);
   };
 
+  const workerLabel = (min: number) => {
+    if (min <= 1) return "Todas";
+    if (min <= 11) return "≥11 trab.";
+    return "≥50 trab.";
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -92,6 +118,15 @@ const Diagnostico = () => {
             <span className="font-heading text-xl font-bold text-corp whitespace-nowrap">{answered}/{totalItems} — {pct}%</span>
           </div>
 
+          {/* Profile info banner */}
+          {profile && (
+            <div className="bg-secondary/50 rounded-lg p-3 mb-6 text-xs text-muted-foreground flex items-center gap-4 flex-wrap">
+              <span>👷 <strong className="text-foreground">{profile.trabajadores || "?"}</strong> trabajadores</span>
+              <span>⚠️ Riesgo: <strong className="text-foreground">{profile.riesgo || "No definido"}</strong></span>
+              <span className="text-[0.7rem] opacity-70">Las preguntas que no aplican a tu empresa se marcan con una etiqueta</span>
+            </div>
+          )}
+
           {/* Categories grouped by PHVA cycle */}
           {Object.keys(CYCLE_LABELS).map((cycle) => {
             const cats = CHECKLIST.filter((c) => c.cycle === cycle);
@@ -111,11 +146,14 @@ const Diagnostico = () => {
                     </h3>
                     {cat.items.map((item) => {
                       const val = answers[item.id];
+                      const applies = applicableItems.has(item.id);
                       return (
                         <div
                           key={item.id}
                           className={`p-3 rounded-lg mb-1.5 border-[1.5px] transition-all ${
-                            val === "si"
+                            val === "na"
+                              ? "bg-muted/30 border-muted/40 opacity-60"
+                              : val === "si"
                               ? "bg-success/5 border-success/20"
                               : val === "no"
                               ? "bg-destructive/5 border-destructive/20"
@@ -124,7 +162,24 @@ const Diagnostico = () => {
                         >
                           <div className="flex gap-3 items-start">
                             <span className="text-xs font-bold text-primary/60 min-w-[42px] pt-0.5">{item.id}</span>
-                            <span className="text-sm text-muted-foreground leading-relaxed flex-1">{item.text}</span>
+                            <div className="flex-1">
+                              <span className="text-sm text-muted-foreground leading-relaxed">{item.text}</span>
+                              <div className="flex gap-1.5 mt-1 flex-wrap">
+                                <span className={`inline-block text-[0.65rem] px-1.5 py-0.5 rounded font-semibold ${
+                                  applies ? "bg-primary/10 text-primary" : "bg-amber-100 text-amber-700"
+                                }`}>
+                                  {workerLabel(item.minWorkers)}
+                                </span>
+                                <span className="inline-block text-[0.65rem] px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-medium">
+                                  Riesgo {item.riskLevels.join(", ")}
+                                </span>
+                                {!applies && (
+                                  <span className="inline-block text-[0.65rem] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-700 font-bold">
+                                    Puede no aplicar a tu empresa
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                             <span className="text-xs font-semibold text-primary min-w-[42px] text-right pt-0.5">{item.pts} pts</span>
                           </div>
                           <div className="flex gap-2 ml-[54px] mt-2">
@@ -149,6 +204,17 @@ const Diagnostico = () => {
                               }`}
                             >
                               ✗ No cumple
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setAnswer(item.id, "na")}
+                              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
+                                val === "na"
+                                  ? "bg-muted-foreground text-white border-muted-foreground"
+                                  : "bg-transparent text-muted-foreground border-border hover:border-muted-foreground/50"
+                              }`}
+                            >
+                              ⊘ No aplica
                             </button>
                           </div>
                         </div>

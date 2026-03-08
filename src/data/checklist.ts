@@ -1,4 +1,26 @@
-export const CHECKLIST = [
+export interface ChecklistItem {
+  id: string;
+  text: string;
+  pts: number;
+  /** Minimum number of workers for this item to apply */
+  minWorkers: number;
+  /** Risk levels where this item applies (roman numerals) */
+  riskLevels: string[];
+}
+
+export interface ChecklistCategory {
+  id: string;
+  title: string;
+  icon: string;
+  color: string;
+  cycle: string;
+  items: ChecklistItem[];
+}
+
+const ALL_RISKS = ["I", "II", "III", "IV", "V"];
+const LOW_RISKS = ["I", "II", "III"];
+
+export const CHECKLIST: ChecklistCategory[] = [
   {
     id: "recursos",
     title: "1. Recursos (10%)",
@@ -6,17 +28,17 @@ export const CHECKLIST = [
     color: "#3B82F6",
     cycle: "I. PLANEAR",
     items: [
-      { id: "1.1.1", text: "¿La empresa cuenta con un responsable designado para el Sistema de Gestión de Seguridad y Salud en el Trabajo (SG-SST)?", pts: 0.5 },
-      { id: "1.1.2", text: "¿Se han definido y comunicado las responsabilidades específicas en el SG-SST a todos los niveles de la organización?", pts: 0.5 },
-      { id: "1.1.3", text: "¿Se han asignado recursos financieros, técnicos y humanos para la implementación del SG-SST?", pts: 0.5 },
-      { id: "1.1.4", text: "¿Todos los trabajadores se encuentran afiliados al Sistema General de Riesgos Laborales?", pts: 0.5 },
-      { id: "1.1.5", text: "¿Se han identificado los trabajadores que realizan actividades de alto riesgo y se realiza la cotización especial de pensión?", pts: 0.5 },
-      { id: "1.1.6", text: "¿Se ha conformado el COPASST (Comité Paritario de Seguridad y Salud en el Trabajo) según la normatividad vigente?", pts: 0.5 },
-      { id: "1.1.7", text: "¿Los miembros del COPASST han recibido capacitación sobre sus funciones y responsabilidades?", pts: 0.5 },
-      { id: "1.1.8", text: "¿Se ha conformado el Comité de Convivencia Laboral según la normatividad vigente?", pts: 0.5 },
-      { id: "1.2.1", text: "¿Existe un programa de capacitación en promoción y prevención (PyP) documentado y en ejecución?", pts: 2 },
-      { id: "1.2.2", text: "¿Se realizan actividades de inducción y reinducción en SG-SST y en promoción y prevención a los trabajadores?", pts: 2 },
-      { id: "1.2.3", text: "¿Los responsables del SG-SST cuentan con el curso virtual de 50 horas en SST?", pts: 2 },
+      { id: "1.1.1", text: "¿La empresa cuenta con un responsable designado para el Sistema de Gestión de Seguridad y Salud en el Trabajo (SG-SST)?", pts: 0.5, minWorkers: 1, riskLevels: LOW_RISKS },
+      { id: "1.1.2", text: "¿Se han definido y comunicado las responsabilidades específicas en el SG-SST a todos los niveles de la organización?", pts: 0.5, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "1.1.3", text: "¿Se han asignado recursos financieros, técnicos y humanos para la implementación del SG-SST?", pts: 0.5, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "1.1.4", text: "¿Todos los trabajadores se encuentran afiliados al Sistema General de Riesgos Laborales?", pts: 0.5, minWorkers: 1, riskLevels: LOW_RISKS },
+      { id: "1.1.5", text: "¿Se han identificado los trabajadores que realizan actividades de alto riesgo y se realiza la cotización especial de pensión?", pts: 0.5, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "1.1.6", text: "¿Se ha conformado el COPASST (Comité Paritario de Seguridad y Salud en el Trabajo) según la normatividad vigente?", pts: 0.5, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "1.1.7", text: "¿Los miembros del COPASST han recibido capacitación sobre sus funciones y responsabilidades?", pts: 0.5, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "1.1.8", text: "¿Se ha conformado el Comité de Convivencia Laboral según la normatividad vigente?", pts: 0.5, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "1.2.1", text: "¿Existe un programa de capacitación en promoción y prevención (PyP) documentado y en ejecución?", pts: 2, minWorkers: 1, riskLevels: LOW_RISKS },
+      { id: "1.2.2", text: "¿Se realizan actividades de inducción y reinducción en SG-SST y en promoción y prevención a los trabajadores?", pts: 2, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "1.2.3", text: "¿Los responsables del SG-SST cuentan con el curso virtual de 50 horas en SST?", pts: 2, minWorkers: 50, riskLevels: ALL_RISKS },
     ],
   },
   {
@@ -26,17 +48,17 @@ export const CHECKLIST = [
     color: "#6366F1",
     cycle: "I. PLANEAR",
     items: [
-      { id: "2.1.1", text: "¿La política del SG-SST está firmada, fechada y ha sido comunicada al COPASST y a todos los trabajadores?", pts: 1 },
-      { id: "2.2.1", text: "¿Los objetivos del SG-SST están definidos, son claros, medibles, cuantificables, con metas y han sido documentados y revisados?", pts: 1 },
-      { id: "2.3.1", text: "¿Se ha realizado la evaluación inicial del SG-SST e identificado las prioridades en seguridad y salud en el trabajo?", pts: 1 },
-      { id: "2.4.1", text: "¿Existe un plan de trabajo anual que identifica objetivos, metas, responsabilidades, recursos, con cronograma y está firmado?", pts: 2 },
-      { id: "2.5.1", text: "¿Se cuenta con un sistema de archivo y retención documental del SG-SST?", pts: 2 },
-      { id: "2.6.1", text: "¿Se realiza rendición de cuentas sobre el desempeño del SG-SST al interior de la empresa?", pts: 1 },
-      { id: "2.7.1", text: "¿La empresa cuenta con una matriz legal actualizada en materia de SST?", pts: 2 },
-      { id: "2.8.1", text: "¿Existen mecanismos de comunicación y auto reporte sobre el SG-SST para trabajadores y contratistas?", pts: 1 },
-      { id: "2.9.1", text: "¿Se tienen procedimientos para la identificación y evaluación de especificaciones en SST para la adquisición de productos y servicios?", pts: 1 },
-      { id: "2.10.1", text: "¿Se realiza evaluación y selección de proveedores y contratistas con criterios de seguridad y salud en el trabajo?", pts: 2 },
-      { id: "2.11.1", text: "¿Se evalúa el impacto de cambios internos y externos sobre el SG-SST (gestión del cambio)?", pts: 1 },
+      { id: "2.1.1", text: "¿La política del SG-SST está firmada, fechada y ha sido comunicada al COPASST y a todos los trabajadores?", pts: 1, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "2.2.1", text: "¿Los objetivos del SG-SST están definidos, son claros, medibles, cuantificables, con metas y han sido documentados y revisados?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "2.3.1", text: "¿Se ha realizado la evaluación inicial del SG-SST e identificado las prioridades en seguridad y salud en el trabajo?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "2.4.1", text: "¿Existe un plan de trabajo anual que identifica objetivos, metas, responsabilidades, recursos, con cronograma y está firmado?", pts: 2, minWorkers: 1, riskLevels: LOW_RISKS },
+      { id: "2.5.1", text: "¿Se cuenta con un sistema de archivo y retención documental del SG-SST?", pts: 2, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "2.6.1", text: "¿Se realiza rendición de cuentas sobre el desempeño del SG-SST al interior de la empresa?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "2.7.1", text: "¿La empresa cuenta con una matriz legal actualizada en materia de SST?", pts: 2, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "2.8.1", text: "¿Existen mecanismos de comunicación y auto reporte sobre el SG-SST para trabajadores y contratistas?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "2.9.1", text: "¿Se tienen procedimientos para la identificación y evaluación de especificaciones en SST para la adquisición de productos y servicios?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "2.10.1", text: "¿Se realiza evaluación y selección de proveedores y contratistas con criterios de seguridad y salud en el trabajo?", pts: 2, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "2.11.1", text: "¿Se evalúa el impacto de cambios internos y externos sobre el SG-SST (gestión del cambio)?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
     ],
   },
   {
@@ -46,24 +68,24 @@ export const CHECKLIST = [
     color: "#10B981",
     cycle: "II. HACER",
     items: [
-      { id: "3.1.1", text: "¿Se cuenta con la descripción sociodemográfica de los trabajadores y el diagnóstico de condiciones de salud?", pts: 1 },
-      { id: "3.1.2", text: "¿Se desarrollan actividades de promoción y prevención en salud conforme al diagnóstico de condiciones de salud?", pts: 1 },
-      { id: "3.1.3", text: "¿Se informa al médico que realiza las evaluaciones ocupacionales sobre los perfiles de cargo y los riesgos asociados?", pts: 1 },
-      { id: "3.1.4", text: "¿Se realizan evaluaciones médicas ocupacionales (ingreso, periódicas, retiro) según los peligros identificados y con la periodicidad establecida?", pts: 1 },
-      { id: "3.1.5", text: "¿Se garantiza la custodia de las historias clínicas ocupacionales conforme a la normatividad vigente?", pts: 1 },
-      { id: "3.1.6", text: "¿Se cumplen las restricciones y recomendaciones médico-laborales emitidas por los profesionales de salud?", pts: 1 },
-      { id: "3.1.7", text: "¿Se implementan programas de estilos de vida y entornos saludables (controles de tabaquismo, alcoholismo, farmacodependencia y otros)?", pts: 1 },
-      { id: "3.1.8", text: "¿La empresa cuenta con suministro de agua potable, servicios sanitarios y disposición adecuada de basuras?", pts: 1 },
-      { id: "3.1.9", text: "¿Se realiza la eliminación adecuada de residuos sólidos, líquidos o gaseosos generados por la actividad de la empresa?", pts: 1 },
-      { id: "3.2.1", text: "¿Se reportan oportunamente los accidentes de trabajo y enfermedades laborales a la ARL, EPS y Dirección Territorial del Ministerio de Trabajo?", pts: 2 },
-      { id: "3.2.2", text: "¿Se investigan los incidentes, accidentes de trabajo y enfermedades laborales conforme a la normatividad vigente?", pts: 2 },
-      { id: "3.2.3", text: "¿Se lleva registro y análisis estadístico de los accidentes de trabajo y enfermedades laborales?", pts: 1 },
-      { id: "3.3.1", text: "¿Se mide la frecuencia de la accidentalidad en la empresa?", pts: 1 },
-      { id: "3.3.2", text: "¿Se mide la severidad de la accidentalidad en la empresa?", pts: 1 },
-      { id: "3.3.3", text: "¿Se mide la mortalidad por accidentes de trabajo en la empresa?", pts: 1 },
-      { id: "3.3.4", text: "¿Se mide la prevalencia de enfermedad laboral en la empresa?", pts: 1 },
-      { id: "3.3.5", text: "¿Se mide la incidencia de enfermedad laboral en la empresa?", pts: 1 },
-      { id: "3.3.6", text: "¿Se mide el ausentismo por causa médica en la empresa?", pts: 1 },
+      { id: "3.1.1", text: "¿Se cuenta con la descripción sociodemográfica de los trabajadores y el diagnóstico de condiciones de salud?", pts: 1, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "3.1.2", text: "¿Se desarrollan actividades de promoción y prevención en salud conforme al diagnóstico de condiciones de salud?", pts: 1, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "3.1.3", text: "¿Se informa al médico que realiza las evaluaciones ocupacionales sobre los perfiles de cargo y los riesgos asociados?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "3.1.4", text: "¿Se realizan evaluaciones médicas ocupacionales (ingreso, periódicas, retiro) según los peligros identificados y con la periodicidad establecida?", pts: 1, minWorkers: 1, riskLevels: LOW_RISKS },
+      { id: "3.1.5", text: "¿Se garantiza la custodia de las historias clínicas ocupacionales conforme a la normatividad vigente?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "3.1.6", text: "¿Se cumplen las restricciones y recomendaciones médico-laborales emitidas por los profesionales de salud?", pts: 1, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "3.1.7", text: "¿Se implementan programas de estilos de vida y entornos saludables (controles de tabaquismo, alcoholismo, farmacodependencia y otros)?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "3.1.8", text: "¿La empresa cuenta con suministro de agua potable, servicios sanitarios y disposición adecuada de basuras?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "3.1.9", text: "¿Se realiza la eliminación adecuada de residuos sólidos, líquidos o gaseosos generados por la actividad de la empresa?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "3.2.1", text: "¿Se reportan oportunamente los accidentes de trabajo y enfermedades laborales a la ARL, EPS y Dirección Territorial del Ministerio de Trabajo?", pts: 2, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "3.2.2", text: "¿Se investigan los incidentes, accidentes de trabajo y enfermedades laborales conforme a la normatividad vigente?", pts: 2, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "3.2.3", text: "¿Se lleva registro y análisis estadístico de los accidentes de trabajo y enfermedades laborales?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "3.3.1", text: "¿Se mide la frecuencia de la accidentalidad en la empresa?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "3.3.2", text: "¿Se mide la severidad de la accidentalidad en la empresa?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "3.3.3", text: "¿Se mide la mortalidad por accidentes de trabajo en la empresa?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "3.3.4", text: "¿Se mide la prevalencia de enfermedad laboral en la empresa?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "3.3.5", text: "¿Se mide la incidencia de enfermedad laboral en la empresa?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "3.3.6", text: "¿Se mide el ausentismo por causa médica en la empresa?", pts: 1, minWorkers: 50, riskLevels: ALL_RISKS },
     ],
   },
   {
@@ -73,16 +95,16 @@ export const CHECKLIST = [
     color: "#F59E0B",
     cycle: "II. HACER",
     items: [
-      { id: "4.1.1", text: "¿Se cuenta con una metodología definida para la identificación de peligros, evaluación y valoración de los riesgos?", pts: 4 },
-      { id: "4.1.2", text: "¿Se identifican los peligros con la participación de todos los niveles de la empresa?", pts: 4 },
-      { id: "4.1.3", text: "¿Se han identificado las sustancias catalogadas como carcinógenas o con toxicidad aguda?", pts: 3 },
-      { id: "4.1.4", text: "¿Se realizan mediciones ambientales de agentes químicos, físicos y biológicos?", pts: 4 },
-      { id: "4.2.1", text: "¿Se implementan medidas de prevención y control frente a los peligros y riesgos identificados?", pts: 2.5 },
-      { id: "4.2.2", text: "¿Se verifica la aplicación de las medidas de prevención y control por parte de los trabajadores?", pts: 2.5 },
-      { id: "4.2.3", text: "¿Se han elaborado procedimientos, instructivos, fichas técnicas y protocolos de seguridad?", pts: 2.5 },
-      { id: "4.2.4", text: "¿Se realizan inspecciones a instalaciones, maquinaria o equipos con participación del COPASST?", pts: 2.5 },
-      { id: "4.2.5", text: "¿Se ejecuta mantenimiento periódico de instalaciones, equipos, máquinas y herramientas?", pts: 2.5 },
-      { id: "4.2.6", text: "¿Se entregan los Elementos de Protección Personal (EPP) y se verifica su uso en contratistas y subcontratistas?", pts: 2.5 },
+      { id: "4.1.1", text: "¿Se cuenta con una metodología definida para la identificación de peligros, evaluación y valoración de los riesgos?", pts: 4, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "4.1.2", text: "¿Se identifican los peligros con la participación de todos los niveles de la empresa?", pts: 4, minWorkers: 1, riskLevels: LOW_RISKS },
+      { id: "4.1.3", text: "¿Se han identificado las sustancias catalogadas como carcinógenas o con toxicidad aguda?", pts: 3, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "4.1.4", text: "¿Se realizan mediciones ambientales de agentes químicos, físicos y biológicos?", pts: 4, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "4.2.1", text: "¿Se implementan medidas de prevención y control frente a los peligros y riesgos identificados?", pts: 2.5, minWorkers: 1, riskLevels: LOW_RISKS },
+      { id: "4.2.2", text: "¿Se verifica la aplicación de las medidas de prevención y control por parte de los trabajadores?", pts: 2.5, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "4.2.3", text: "¿Se han elaborado procedimientos, instructivos, fichas técnicas y protocolos de seguridad?", pts: 2.5, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "4.2.4", text: "¿Se realizan inspecciones a instalaciones, maquinaria o equipos con participación del COPASST?", pts: 2.5, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "4.2.5", text: "¿Se ejecuta mantenimiento periódico de instalaciones, equipos, máquinas y herramientas?", pts: 2.5, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "4.2.6", text: "¿Se entregan los Elementos de Protección Personal (EPP) y se verifica su uso en contratistas y subcontratistas?", pts: 2.5, minWorkers: 11, riskLevels: LOW_RISKS },
     ],
   },
   {
@@ -92,8 +114,8 @@ export const CHECKLIST = [
     color: "#EF4444",
     cycle: "II. HACER",
     items: [
-      { id: "5.1.1", text: "¿Se cuenta con un Plan de Prevención, Preparación y Respuesta ante Emergencias?", pts: 5 },
-      { id: "5.1.2", text: "¿La brigada de prevención está conformada, capacitada y dotada?", pts: 5 },
+      { id: "5.1.1", text: "¿Se cuenta con un Plan de Prevención, Preparación y Respuesta ante Emergencias?", pts: 5, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "5.1.2", text: "¿La brigada de prevención está conformada, capacitada y dotada?", pts: 5, minWorkers: 11, riskLevels: LOW_RISKS },
     ],
   },
   {
@@ -103,10 +125,10 @@ export const CHECKLIST = [
     color: "#8B5CF6",
     cycle: "III. VERIFICAR",
     items: [
-      { id: "6.1.1", text: "¿Se han definido indicadores del SG-SST de acuerdo con las condiciones de la empresa (estructura, proceso y resultado)?", pts: 1.25 },
-      { id: "6.1.2", text: "¿La empresa adelanta auditoría al SG-SST por lo menos una vez al año?", pts: 1.25 },
-      { id: "6.1.3", text: "¿La alta dirección realiza revisión anual del SG-SST con base en los resultados de la auditoría?", pts: 1.25 },
-      { id: "6.1.4", text: "¿Se planifican las auditorías con la participación del COPASST?", pts: 1.25 },
+      { id: "6.1.1", text: "¿Se han definido indicadores del SG-SST de acuerdo con las condiciones de la empresa (estructura, proceso y resultado)?", pts: 1.25, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "6.1.2", text: "¿La empresa adelanta auditoría al SG-SST por lo menos una vez al año?", pts: 1.25, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "6.1.3", text: "¿La alta dirección realiza revisión anual del SG-SST con base en los resultados de la auditoría?", pts: 1.25, minWorkers: 11, riskLevels: LOW_RISKS },
+      { id: "6.1.4", text: "¿Se planifican las auditorías con la participación del COPASST?", pts: 1.25, minWorkers: 50, riskLevels: ALL_RISKS },
     ],
   },
   {
@@ -116,10 +138,10 @@ export const CHECKLIST = [
     color: "#06B6D4",
     cycle: "IV. ACTUAR",
     items: [
-      { id: "7.1.1", text: "¿Se definen acciones preventivas y correctivas con base en los resultados del SG-SST?", pts: 2.5 },
-      { id: "7.1.2", text: "¿Se implementan acciones de mejora conforme a la revisión de la alta dirección?", pts: 2.5 },
-      { id: "7.1.3", text: "¿Se ejecutan acciones de mejora con base en las investigaciones de accidentes de trabajo y enfermedades laborales?", pts: 2.5 },
-      { id: "7.1.4", text: "¿Se elabora e implementa un plan de mejoramiento con medidas y acciones correctivas solicitadas por autoridades y la ARL?", pts: 2.5 },
+      { id: "7.1.1", text: "¿Se definen acciones preventivas y correctivas con base en los resultados del SG-SST?", pts: 2.5, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "7.1.2", text: "¿Se implementan acciones de mejora conforme a la revisión de la alta dirección?", pts: 2.5, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "7.1.3", text: "¿Se ejecutan acciones de mejora con base en las investigaciones de accidentes de trabajo y enfermedades laborales?", pts: 2.5, minWorkers: 50, riskLevels: ALL_RISKS },
+      { id: "7.1.4", text: "¿Se elabora e implementa un plan de mejoramiento con medidas y acciones correctivas solicitadas por autoridades y la ARL?", pts: 2.5, minWorkers: 50, riskLevels: ALL_RISKS },
     ],
   },
 ];
@@ -144,4 +166,29 @@ export const CYCLE_LABELS: Record<string, string> = {
 export const getCatTotalPts = (catId: string) => {
   const cat = CHECKLIST.find((c) => c.id === catId);
   return cat ? cat.items.reduce((s, i) => s + i.pts, 0) : 0;
+};
+
+/** Extract roman numeral from risk level string like "I - Mínimo" */
+export const parseRiskLevel = (riesgo: string | null): string | null => {
+  if (!riesgo) return null;
+  const match = riesgo.match(/^(I{1,3}|IV|V)/);
+  return match ? match[0] : null;
+};
+
+/** Check if an item applies to a given company profile */
+export const itemApplies = (
+  item: ChecklistItem,
+  trabajadores: number | null,
+  riesgo: string | null
+): boolean => {
+  const workers = trabajadores || 0;
+  const risk = parseRiskLevel(riesgo);
+
+  // If company has fewer workers than minimum, doesn't apply
+  if (workers > 0 && workers < item.minWorkers) return false;
+
+  // If risk level is known and not in the item's list, doesn't apply
+  if (risk && !item.riskLevels.includes(risk)) return false;
+
+  return true;
 };
