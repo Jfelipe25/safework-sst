@@ -25,6 +25,23 @@ const Resultado = () => {
     setDiag(data);
   };
 
+  const handleContactar = async () => {
+    if (!user) return;
+    setSending(true);
+    const { error } = await supabase.from("solicitudes").insert({
+      client_id: user.id,
+      mensaje: `Solicitud de asesoría desde diagnóstico ${id}`,
+      score: diag?.score || 0,
+      nivel: diag?.level || "low",
+    });
+    setSending(false);
+    if (error) {
+      toast.error("Error al enviar solicitud");
+    } else {
+      toast.success("¡Solicitud enviada! La asesora te contactará pronto.");
+    }
+  };
+
   if (!diag) return (
     <div className="min-h-screen bg-background">
       <Navbar />
