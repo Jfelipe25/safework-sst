@@ -98,15 +98,15 @@ export function downloadDiagHTML(diag: any, client: any) {
   // Color legend table
   const colorLegendHTML = `
     <div style="margin-bottom:20px">
-      <div style="font-size:13px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Referencia de categorías</div>
+      <div style="font-size:15px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Referencia de categorías</div>
       <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden">
         <thead><tr style="background:#f8fafc">
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Color</th>
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Categoría</th>
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Ítems OK</th>
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts obtenidos</th>
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts posibles</th>
-          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Cumplimiento</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Color</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Categoría</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Ítems OK</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts obtenidos</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts posibles</th>
+          <th style="padding:9px 12px;font-size:14px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Cumplimiento</th>
         </tr></thead>
         <tbody>
         ${CHECKLIST.map((cat, i) => {
