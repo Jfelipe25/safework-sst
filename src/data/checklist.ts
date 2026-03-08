@@ -95,7 +95,7 @@ export const CAT_COLORS: Record<string, string> = {
   verificacion: "#FBBF24",
   mejora: "#F87171",
   gestion: "#A78BFA",
-  vigilancia: "#F472B6",
+  vigilancia: "#14B8A6",
 };
 
 export const getCatTotalPts = (catId: string) => {

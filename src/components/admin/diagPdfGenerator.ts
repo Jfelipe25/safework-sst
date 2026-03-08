@@ -1,7 +1,7 @@
 import { CHECKLIST } from "@/data/checklist";
 import { toast } from "sonner";
 
-const CAT_HEX = ['#60A5FA','#34D399','#FBBF24','#F87171','#A78BFA','#F472B6'];
+const CAT_HEX = ['#60A5FA','#34D399','#FBBF24','#F87171','#A78BFA','#14B8A6'];
 const TOTAL_PTS = CHECKLIST.reduce((s, cat) => s + cat.items.reduce((ss, it) => ss + it.pts, 0), 0);
 
 function generateRadarSVG(catVals: number[], labels: string[], width = 460, height = 320): string {
