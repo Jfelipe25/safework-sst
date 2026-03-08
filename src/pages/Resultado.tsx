@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { CHECKLIST, CAT_COLORS, getCatTotalPts } from "@/data/checklist";
+import { CHECKLIST, CAT_COLORS, getCatTotalPts, CYCLE_LABELS } from "@/data/checklist";
 import { supabase } from "@/integrations/supabase/client";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, CartesianGrid, PieChart, Pie } from "recharts";
 import { Phone, Check } from "lucide-react";
