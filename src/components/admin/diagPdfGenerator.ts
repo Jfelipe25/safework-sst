@@ -293,6 +293,7 @@ export function downloadDiagHTML(diag: any, client: any) {
     </div>
   </div>
 
+  <div style="page-break-before:always"></div>
   ${colorLegendHTML}
   <h3 style="font-size:17px;font-weight:700;border-bottom:2px solid #1E3A8A;padding-bottom:6px;margin-bottom:14px;color:#0A2540">Detalle por categoría</h3>
   ${catRows}
