@@ -90,10 +90,7 @@ export function downloadDiagHTML(diag: any, client: any) {
   const lvlTxt = d.level === "high" ? "Alto" : d.level === "medium" ? "Medio" : "Bajo";
 
   const catVals = CHECKLIST.map(c => catScores[c.id] || 0);
-  const catLabels = CHECKLIST.map(c => {
-    const t = c.title.split('.')[1]?.trim() || c.id;
-    return t.length > 12 ? t.substring(0, 12) + '…' : t;
-  });
+  const catLabels = SHORT_LABELS;
 
   const radarSVG = generateRadarSVG(catVals, catLabels);
   const barSVG = generateBarSVG(catVals, catLabels);
