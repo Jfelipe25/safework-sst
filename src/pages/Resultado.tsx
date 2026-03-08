@@ -98,9 +98,9 @@ const Resultado = () => {
             <div className="bg-blue-pale/50 rounded-xl p-4">
               <h4 className="text-xs font-bold text-corp uppercase tracking-wider mb-3">Puntaje por categoría</h4>
               <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={barData}>
-                  <XAxis dataKey="name" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
-                  <YAxis domain={[0, 100]} tick={{ fontSize: 9 }} />
+                 <BarChart data={barData} margin={{ bottom: 40 }}>
+                   <XAxis dataKey="name" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} angle={-30} textAnchor="end" interval={0} height={50} />
+                   <YAxis domain={[0, 100]} tick={{ fontSize: 9 }} />
                   <Tooltip />
                   <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                     {barData.map((entry, i) => (
