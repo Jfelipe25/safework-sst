@@ -153,7 +153,7 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
               const s = catScores[cat.id] || 0;
               const vc = s >= 80 ? '#34D399' : s >= 50 ? '#FBBF24' : '#F87171';
               const ptsTotal = cat.items.reduce((a, it) => a + it.pts, 0);
-              const ptsEarned = cat.items.filter(it => answers[it.id]).reduce((a, it) => a + it.pts, 0);
+              const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
               return (
                 <div key={cat.id} className="flex items-center gap-2 py-1.5 px-2 bg-white/[0.03] rounded-lg">
                   <div className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: CAT_HEX[i], boxShadow: `0 0 5px ${CAT_HEX[i]}80` }} />
@@ -175,14 +175,14 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
             const s = catScores[cat.id] || 0;
             const c = s >= 80 ? "#059669" : s >= 50 ? "#D97706" : "#DC2626";
             const ptsTotal = cat.items.reduce((a, i) => a + i.pts, 0);
-            const ptsEarned = cat.items.filter(it => answers[it.id]).reduce((a, it) => a + it.pts, 0);
+            const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
             const weight = Math.round(ptsTotal / TOTAL_PTS * 100);
             return (
               <div key={cat.id} className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.06]">
                 <div className="flex justify-between items-center mb-1 flex-wrap gap-1">
                   <span className="text-sm font-semibold text-white/90">{cat.icon} {cat.title}</span>
                   <div className="flex gap-3 items-center">
-                    <span className="text-[0.7rem] text-white/40">{cat.items.filter(it => answers[it.id]).length}/{cat.items.length} ítems</span>
+                    <span className="text-[0.7rem] text-white/40">{cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length}/{cat.items.length} ítems</span>
                     <span className="text-[0.75rem] text-white/45">{ptsEarned.toFixed(1)}/{ptsTotal} pts</span>
                     <span className="text-[0.7rem] text-white/35">Peso: {weight}%</span>
                     <strong className="text-base" style={{ color: c }}>{s}%</strong>
@@ -192,7 +192,7 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
                   <div className="h-full rounded" style={{ width: `${s}%`, background: c }} />
                 </div>
                 {cat.items.map(item => {
-                  const ok = answers[item.id];
+                  const ok = answers[item.id] === "si" || answers[item.id] === true;
                   return (
                     <div key={item.id} className="flex gap-2 py-1 border-b border-white/[0.04] items-start">
                       <span className="flex-shrink-0 text-sm mt-0.5">{ok ? "✅" : "❌"}</span>

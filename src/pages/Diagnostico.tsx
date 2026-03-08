@@ -7,26 +7,28 @@ import { CHECKLIST, getCatTotalPts, CYCLE_LABELS } from "@/data/checklist";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+type Answer = "si" | "no";
+
 const Diagnostico = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [answers, setAnswers] = useState<Record<string, boolean>>({});
+  const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [submitting, setSubmitting] = useState(false);
 
   const totalItems = CHECKLIST.reduce((s, c) => s + c.items.length, 0);
   const answered = Object.keys(answers).length;
   const pct = Math.round((answered / totalItems) * 100);
 
-  const toggleItem = (id: string) => {
-    setAnswers((prev) => {
-      const next = { ...prev };
-      if (next[id]) delete next[id];
-      else next[id] = true;
-      return next;
-    });
+  const setAnswer = (id: string, value: Answer) => {
+    setAnswers((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleSubmit = async () => {
+    if (answered < totalItems) {
+      toast.error(`Faltan ${totalItems - answered} preguntas por responder`);
+      return;
+    }
+
     setSubmitting(true);
     let earned = 0;
     const catScores: Record<string, number> = {};
@@ -35,7 +37,7 @@ const Diagnostico = () => {
       let catEarned = 0;
       const catTotal = getCatTotalPts(cat.id);
       cat.items.forEach((item) => {
-        if (answers[item.id]) {
+        if (answers[item.id] === "si") {
           catEarned += item.pts;
           earned += item.pts;
         }
@@ -60,7 +62,6 @@ const Diagnostico = () => {
       return;
     }
 
-    // Update trazabilidad status
     await supabase.from("trazabilidad").upsert({
       client_id: user!.id,
       status_id: "con-diag",
@@ -88,7 +89,7 @@ const Diagnostico = () => {
                 <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: "var(--gradient-blue-bar)" }} />
               </div>
             </div>
-            <span className="font-heading text-xl font-bold text-corp whitespace-nowrap">{pct}%</span>
+            <span className="font-heading text-xl font-bold text-corp whitespace-nowrap">{answered}/{totalItems} — {pct}%</span>
           </div>
 
           {/* Categories grouped by PHVA cycle */}
@@ -108,32 +109,59 @@ const Diagnostico = () => {
                         {getCatTotalPts(cat.id)} pts
                       </span>
                     </h3>
-                    {cat.items.map((item) => (
-                      <label
-                        key={item.id}
-                        className={`flex gap-3 p-3 rounded-lg mb-1 border-[1.5px] transition-all cursor-pointer items-start ${
-                          answers[item.id] ? "bg-success/5 border-success/20" : "border-transparent hover:bg-blue-pale hover:border-primary/15"
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          className="w-[17px] h-[17px] min-w-[17px] mt-0.5 accent-primary cursor-pointer"
-                          checked={!!answers[item.id]}
-                          onChange={() => toggleItem(item.id)}
-                        />
-                        <span className="text-xs font-bold text-primary/60 min-w-[42px] pt-0.5">{item.id}</span>
-                        <span className="text-sm text-muted-foreground leading-relaxed flex-1">{item.text}</span>
-                        <span className="text-xs font-semibold text-primary min-w-[42px] text-right pt-0.5">{item.pts} pts</span>
-                      </label>
-                    ))}
+                    {cat.items.map((item) => {
+                      const val = answers[item.id];
+                      return (
+                        <div
+                          key={item.id}
+                          className={`p-3 rounded-lg mb-1.5 border-[1.5px] transition-all ${
+                            val === "si"
+                              ? "bg-success/5 border-success/20"
+                              : val === "no"
+                              ? "bg-destructive/5 border-destructive/20"
+                              : "border-transparent hover:bg-blue-pale"
+                          }`}
+                        >
+                          <div className="flex gap-3 items-start">
+                            <span className="text-xs font-bold text-primary/60 min-w-[42px] pt-0.5">{item.id}</span>
+                            <span className="text-sm text-muted-foreground leading-relaxed flex-1">{item.text}</span>
+                            <span className="text-xs font-semibold text-primary min-w-[42px] text-right pt-0.5">{item.pts} pts</span>
+                          </div>
+                          <div className="flex gap-2 ml-[54px] mt-2">
+                            <button
+                              type="button"
+                              onClick={() => setAnswer(item.id, "si")}
+                              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
+                                val === "si"
+                                  ? "bg-success text-white border-success"
+                                  : "bg-transparent text-muted-foreground border-border hover:border-success/50 hover:text-success"
+                              }`}
+                            >
+                              ✓ Sí cumple
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setAnswer(item.id, "no")}
+                              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
+                                val === "no"
+                                  ? "bg-destructive text-white border-destructive"
+                                  : "bg-transparent text-muted-foreground border-border hover:border-destructive/50 hover:text-destructive"
+                              }`}
+                            >
+                              ✗ No cumple
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 ))}
               </div>
             );
           })}
 
-          <Button size="lg" className="w-full" onClick={handleSubmit} disabled={submitting}>
-            {submitting ? "Guardando..." : "Ver mi resultado →"}
+          <Button size="lg" className="w-full" onClick={handleSubmit} disabled={submitting || answered < totalItems}>
+            {submitting ? "Guardando..." : answered < totalItems ? `Responde todas las preguntas (${totalItems - answered} restantes)` : "Ver mi resultado →"}
           </Button>
         </div>
       </main>
