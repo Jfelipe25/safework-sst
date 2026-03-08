@@ -14,16 +14,209 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      diagnostics: {
+        Row: {
+          answers: Json
+          cat_scores: Json
+          created_at: string
+          fecha: string
+          id: string
+          level: string
+          score: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          cat_scores?: Json
+          created_at?: string
+          fecha?: string
+          id?: string
+          level?: string
+          score?: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          cat_scores?: Json
+          created_at?: string
+          fecha?: string
+          id?: string
+          level?: string
+          score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          arl: string | null
+          cargo: string | null
+          ciudad: string | null
+          created_at: string
+          empresa: string
+          id: string
+          nit: string | null
+          nombre: string
+          riesgo: string | null
+          sector: string | null
+          telefono: string | null
+          trabajadores: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          arl?: string | null
+          cargo?: string | null
+          ciudad?: string | null
+          created_at?: string
+          empresa: string
+          id?: string
+          nit?: string | null
+          nombre: string
+          riesgo?: string | null
+          sector?: string | null
+          telefono?: string | null
+          trabajadores?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          arl?: string | null
+          cargo?: string | null
+          ciudad?: string | null
+          created_at?: string
+          empresa?: string
+          id?: string
+          nit?: string | null
+          nombre?: string
+          riesgo?: string | null
+          sector?: string | null
+          telefono?: string | null
+          trabajadores?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      solicitudes: {
+        Row: {
+          client_id: string
+          created_at: string
+          disponibilidad: string | null
+          id: string
+          leida: boolean
+          mensaje: string
+          nivel: string | null
+          score: number | null
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          disponibilidad?: string | null
+          id?: string
+          leida?: boolean
+          mensaje: string
+          nivel?: string | null
+          score?: number | null
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          disponibilidad?: string | null
+          id?: string
+          leida?: boolean
+          mensaje?: string
+          nivel?: string | null
+          score?: number | null
+        }
+        Relationships: []
+      }
+      traz_statuses: {
+        Row: {
+          color: string
+          es_custom: boolean
+          id: string
+          label: string
+        }
+        Insert: {
+          color?: string
+          es_custom?: boolean
+          id: string
+          label: string
+        }
+        Update: {
+          color?: string
+          es_custom?: boolean
+          id?: string
+          label?: string
+        }
+        Relationships: []
+      }
+      trazabilidad: {
+        Row: {
+          client_id: string
+          comentarios: Json
+          id: string
+          status_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          comentarios?: Json
+          id?: string
+          status_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          comentarios?: Json
+          id?: string
+          status_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trazabilidad_status_id_fkey"
+            columns: ["status_id"]
+            isOneToOne: false
+            referencedRelation: "traz_statuses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "client"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +343,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "client"],
+    },
   },
 } as const
