@@ -37,14 +37,23 @@ const Resultado = () => {
   const color = level === "high" ? "#059669" : level === "medium" ? "#D97706" : "#DC2626";
   const levelTxt = level === "high" ? "🟢 Nivel Alto de Cumplimiento" : level === "medium" ? "🟡 Nivel Medio de Cumplimiento" : "🔴 Nivel Bajo de Cumplimiento";
 
+  const shortNames: Record<string, string> = {
+    planeacion: "Planificación",
+    implementacion: "Implementación",
+    verificacion: "Verificación",
+    mejoramiento: "Mejoramiento",
+    gestion: "Gestión Riesgo",
+    vigilancia: "Medicina Trabajo",
+  };
+
   const radarData = CHECKLIST.map((cat) => ({
-    category: cat.title.split(".")[1]?.trim().substring(0, 14) || cat.id,
+    category: shortNames[cat.id] || cat.id,
     value: catScores[cat.id] || 0,
     fullMark: 100,
   }));
 
   const barData = CHECKLIST.map((cat) => ({
-    name: cat.title.split(".")[1]?.trim().substring(0, 12) || cat.id,
+    name: shortNames[cat.id] || cat.id,
     value: catScores[cat.id] || 0,
     color: CAT_COLORS[cat.id],
   }));
@@ -89,9 +98,9 @@ const Resultado = () => {
             <div className="bg-blue-pale/50 rounded-xl p-4">
               <h4 className="text-xs font-bold text-corp uppercase tracking-wider mb-3">Puntaje por categoría</h4>
               <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={barData}>
-                  <XAxis dataKey="name" tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} />
-                  <YAxis domain={[0, 100]} tick={{ fontSize: 9 }} />
+                 <BarChart data={barData} margin={{ bottom: 40 }}>
+                   <XAxis dataKey="name" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} angle={-30} textAnchor="end" interval={0} height={50} />
+                   <YAxis domain={[0, 100]} tick={{ fontSize: 9 }} />
                   <Tooltip />
                   <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                     {barData.map((entry, i) => (
