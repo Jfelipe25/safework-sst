@@ -3,6 +3,7 @@ import { CHECKLIST } from "@/data/checklist";
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
+  PieChart, Pie,
 } from "recharts";
 
 const TOTAL_PTS = CHECKLIST.reduce((s, cat) => s + cat.items.reduce((ss, it) => ss + it.pts, 0), 0);
@@ -39,6 +40,37 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
       value: catScores[cat.id] || 0,
       fill: CAT_HEX[i],
     })), [catScores]);
+
+  // Cycle (PHVA) data
+  const cycleColors: Record<string, string> = { "I. PLANEAR": "#3B82F6", "II. HACER": "#10B981", "III. VERIFICAR": "#8B5CF6", "IV. ACTUAR": "#06B6D4" };
+  const cycleData = useMemo(() => {
+    const map: Record<string, { total: number; earned: number }> = {};
+    CHECKLIST.forEach((cat) => {
+      if (!map[cat.cycle]) map[cat.cycle] = { total: 0, earned: 0 };
+      cat.items.forEach((item) => {
+        map[cat.cycle].total += item.pts;
+        if (answers[item.id] === "si" || answers[item.id] === true) map[cat.cycle].earned += item.pts;
+      });
+    });
+    return Object.entries(map).map(([cycle, { total, earned }]) => ({
+      name: cycle.replace(/^[IVX]+\.\s*/, ""),
+      value: total > 0 ? Math.round((earned / total) * 100) : 0,
+      color: cycleColors[cycle] || "#888",
+    }));
+  }, [answers]);
+
+  // Custom tooltip
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div style={{ background: "#0A2540", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 12, color: "white", padding: "8px 12px" }}>
+        <div style={{ marginBottom: 4, fontWeight: 600 }}>{label || payload[0]?.payload?.fullName || payload[0]?.payload?.name}</div>
+        {payload.map((p: any, i: number) => (
+          <div key={i}>{p.value}%</div>
+        ))}
+      </div>
+    );
+  };
 
   // Custom radar dot renderer with per-point colors
   const renderRadarDot = (props: any) => {
@@ -105,11 +137,11 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
                     tick={{ fill: 'rgba(255,255,255,0.7)', fontSize: 11, fontWeight: 600 }}
                     tickLine={false}
                   />
-                  <PolarRadiusAxis
+                   <PolarRadiusAxis
                     angle={90}
                     domain={[0, 100]}
                     tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 9 }}
-                    tickCount={5}
+                    tickCount={6}
                     axisLine={false}
                   />
                   <Radar name="Cumplimiento" dataKey="value" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.12} strokeWidth={2.5} dot={renderRadarDot} />
@@ -132,11 +164,32 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
                     height={60}
                   />
                   <YAxis domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 9 }} tickFormatter={v => `${v}%`} />
-                  <Tooltip cursor={false} contentStyle={{ background: '#0A2540', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, color: 'white', fontSize: 12 }}
-                    formatter={(value: number, _name: string, props: any) => [`${value}%`, props.payload.fullName]} />
+                   <Tooltip content={<CustomTooltip />} cursor={false} />
                   <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                     {barData.map((entry, i) => (
                       <Cell key={i} fill={entry.fill} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
+        {/* Cycle chart */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="bg-white/[0.04] rounded-xl p-5">
+            <div className="text-[0.75rem] font-bold text-white/40 uppercase tracking-wide mb-3">Puntaje por ciclo PHVA</div>
+            <div className="h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={cycleData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                  <XAxis dataKey="name" tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11 }} />
+                  <YAxis domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 9 }} tickFormatter={v => `${v}%`} />
+                  <Tooltip content={<CustomTooltip />} cursor={false} />
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                    {cycleData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} />
                     ))}
                   </Bar>
                 </BarChart>

@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { CHECKLIST, CAT_COLORS, getCatTotalPts } from "@/data/checklist";
 import { supabase } from "@/integrations/supabase/client";
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from "recharts";
+import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, CartesianGrid, PieChart, Pie } from "recharts";
 import { Phone, Check } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -101,6 +101,36 @@ const Resultado = () => {
     color: CAT_COLORS[cat.id],
   }));
 
+  // Cycle (PHVA) scores
+  const cycleColors: Record<string, string> = { "I. PLANEAR": "#3B82F6", "II. HACER": "#10B981", "III. VERIFICAR": "#8B5CF6", "IV. ACTUAR": "#06B6D4" };
+  const cycleMap: Record<string, { total: number; earned: number }> = {};
+  CHECKLIST.forEach((cat) => {
+    const cycle = cat.cycle;
+    if (!cycleMap[cycle]) cycleMap[cycle] = { total: 0, earned: 0 };
+    const answers = (diag.answers || {}) as Record<string, any>;
+    cat.items.forEach((item) => {
+      cycleMap[cycle].total += item.pts;
+      if (answers[item.id] === "si" || answers[item.id] === true) cycleMap[cycle].earned += item.pts;
+    });
+  });
+  const cycleData = Object.entries(cycleMap).map(([cycle, { total, earned }]) => ({
+    name: cycle.replace(/^[IVX]+\.\s*/, ""),
+    value: total > 0 ? Math.round((earned / total) * 100) : 0,
+    color: cycleColors[cycle] || "#888",
+  }));
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div className="bg-white border border-border rounded-lg shadow-lg px-3 py-2 text-xs">
+        <div className="font-semibold text-foreground mb-0.5">{label || payload[0]?.payload?.name}</div>
+        {payload.map((p: any, i: number) => (
+          <div key={i} className="text-muted-foreground">{p.value}%</div>
+        ))}
+      </div>
+    );
+  };
+
   const msg = level === "high"
     ? "¡Excelente resultado! Tu empresa tiene un alto nivel de cumplimiento del SG-SST."
     : level === "medium"
@@ -129,24 +159,45 @@ const Resultado = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
             <div className="bg-blue-pale/50 rounded-xl p-4">
               <h4 className="text-xs font-bold text-corp uppercase tracking-wider mb-3">Radar de cumplimiento</h4>
-              <ResponsiveContainer width="100%" height={220}>
-                <RadarChart data={radarData}>
+              <ResponsiveContainer width="100%" height={250}>
+                <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="60%">
                   <PolarGrid stroke="hsl(var(--border))" />
                   <PolarAngleAxis dataKey="category" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 9 }} />
+                  <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 9, fill: "hsl(var(--muted-foreground))" }} tickCount={5} axisLine={false} />
                   <Radar name="Cumplimiento" dataKey="value" stroke="hsl(var(--primary))" fill="hsl(var(--primary))" fillOpacity={0.2} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
             </div>
             <div className="bg-blue-pale/50 rounded-xl p-4">
               <h4 className="text-xs font-bold text-corp uppercase tracking-wider mb-3">Puntaje por categoría</h4>
-              <ResponsiveContainer width="100%" height={220}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={barData} margin={{ bottom: 40 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis dataKey="name" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} angle={-30} textAnchor="end" interval={0} height={50} />
-                  <YAxis domain={[0, 100]} tick={{ fontSize: 9 }} />
-                  <Tooltip />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 9 }} tickFormatter={(v) => `${v}%`} />
+                  <Tooltip content={<CustomTooltip />} cursor={false} />
                   <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                     {barData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+
+          {/* Cycle chart */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-left">
+            <div className="bg-blue-pale/50 rounded-xl p-4">
+              <h4 className="text-xs font-bold text-corp uppercase tracking-wider mb-3">Puntaje por ciclo PHVA</h4>
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={cycleData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis dataKey="name" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+                  <YAxis domain={[0, 100]} tick={{ fontSize: 9 }} tickFormatter={(v) => `${v}%`} />
+                  <Tooltip content={<CustomTooltip />} cursor={false} />
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                    {cycleData.map((entry, i) => (
                       <Cell key={i} fill={entry.color} />
                     ))}
                   </Bar>
