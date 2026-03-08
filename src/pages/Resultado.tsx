@@ -37,14 +37,23 @@ const Resultado = () => {
   const color = level === "high" ? "#059669" : level === "medium" ? "#D97706" : "#DC2626";
   const levelTxt = level === "high" ? "🟢 Nivel Alto de Cumplimiento" : level === "medium" ? "🟡 Nivel Medio de Cumplimiento" : "🔴 Nivel Bajo de Cumplimiento";
 
+  const shortNames: Record<string, string> = {
+    planeacion: "Planificación",
+    implementacion: "Implementación",
+    verificacion: "Verificación",
+    mejoramiento: "Mejoramiento",
+    gestion: "Gestión Riesgo",
+    vigilancia: "Medicina Trabajo",
+  };
+
   const radarData = CHECKLIST.map((cat) => ({
-    category: cat.title.split(".")[1]?.trim().substring(0, 14) || cat.id,
+    category: shortNames[cat.id] || cat.id,
     value: catScores[cat.id] || 0,
     fullMark: 100,
   }));
 
   const barData = CHECKLIST.map((cat) => ({
-    name: cat.title.split(".")[1]?.trim().substring(0, 12) || cat.id,
+    name: shortNames[cat.id] || cat.id,
     value: catScores[cat.id] || 0,
     color: CAT_COLORS[cat.id],
   }));
