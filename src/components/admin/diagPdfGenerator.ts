@@ -97,16 +97,16 @@ export function downloadDiagHTML(diag: any, client: any) {
 
   // Color legend table
   const colorLegendHTML = `
-    <div style="margin-bottom:18px">
-      <div style="font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:8px">Referencia de categorías</div>
+    <div style="margin-bottom:20px">
+      <div style="font-size:13px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px">Referencia de categorías</div>
       <table style="width:100%;border-collapse:collapse;border:1px solid #e5e7eb;border-radius:6px;overflow:hidden">
         <thead><tr style="background:#f8fafc">
-          <th style="padding:7px 10px;font-size:10px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Color</th>
-          <th style="padding:7px 10px;font-size:10px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Categoría</th>
-          <th style="padding:7px 10px;font-size:10px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Ítems OK</th>
-          <th style="padding:7px 10px;font-size:10px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts obtenidos</th>
-          <th style="padding:7px 10px;font-size:10px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts posibles</th>
-          <th style="padding:7px 10px;font-size:10px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Cumplimiento</th>
+          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Color</th>
+          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:left;font-weight:700;border-bottom:1px solid #e5e7eb">Categoría</th>
+          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Ítems OK</th>
+          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts obtenidos</th>
+          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Pts posibles</th>
+          <th style="padding:8px 12px;font-size:12px;color:#374151;text-align:center;font-weight:700;border-bottom:1px solid #e5e7eb">Cumplimiento</th>
         </tr></thead>
         <tbody>
         ${CHECKLIST.map((cat, i) => {
@@ -116,12 +116,12 @@ export function downloadDiagHTML(diag: any, client: any) {
           const ptsE = cat.items.filter(it => answers[it.id]).reduce((a, it) => a + it.pts, 0);
           const answered = cat.items.filter(it => answers[it.id]).length;
           return `<tr style="border-bottom:1px solid #f3f4f6">
-            <td style="padding:6px 10px;text-align:center"><div style="width:16px;height:16px;border-radius:4px;background:${CAT_HEX[i]};display:inline-block"></div></td>
-            <td style="padding:6px 10px;font-size:10.5px;color:#0A2540;font-weight:600">${cat.icon} ${cat.title.split('.')[1]?.trim()}</td>
-            <td style="padding:6px 10px;font-size:10.5px;text-align:center;color:#374151">${answered}/${cat.items.length}</td>
-            <td style="padding:6px 10px;font-size:10.5px;text-align:center;color:${sc};font-weight:700">${ptsE.toFixed(1)}</td>
-            <td style="padding:6px 10px;font-size:10.5px;text-align:center;color:#6b7280">${ptsT}</td>
-            <td style="padding:6px 10px;font-size:11px;text-align:center;color:${sc};font-weight:700">${s}%</td>
+            <td style="padding:7px 12px;text-align:center"><div style="width:16px;height:16px;border-radius:4px;background:${CAT_HEX[i]};display:inline-block"></div></td>
+            <td style="padding:7px 12px;font-size:13px;color:#0A2540;font-weight:600">${cat.icon} ${cat.title.split('.')[1]?.trim()}</td>
+            <td style="padding:7px 12px;font-size:13px;text-align:center;color:#374151">${answered}/${cat.items.length}</td>
+            <td style="padding:7px 12px;font-size:13px;text-align:center;color:${sc};font-weight:700">${ptsE.toFixed(1)}</td>
+            <td style="padding:7px 12px;font-size:13px;text-align:center;color:#6b7280">${ptsT}</td>
+            <td style="padding:7px 12px;font-size:13.5px;text-align:center;color:${sc};font-weight:700">${s}%</td>
           </tr>`;
         }).join('')}
         </tbody>
