@@ -47,12 +47,12 @@ function generateRadarSVG(catVals: number[], labels: string[], width = 520, heig
   </svg>`;
 }
 
-function generateBarSVG(catVals: number[], labels: string[], width = 460, height = 300): string {
-  const margin = { top: 20, right: 20, bottom: 60, left: 45 };
+function generateBarSVG(catVals: number[], labels: string[], width = 520, height = 340): string {
+  const margin = { top: 25, right: 20, bottom: 80, left: 45 };
   const w = width - margin.left - margin.right;
   const h = height - margin.top - margin.bottom;
   const n = catVals.length;
-  const barW = Math.min(w / n * 0.65, 50);
+  const barW = Math.min(w / n * 0.6, 50);
   const gap = w / n;
 
   let bars = '';
@@ -61,13 +61,13 @@ function generateBarSVG(catVals: number[], labels: string[], width = 460, height
     const barH = (catVals[i] / 100) * h;
     const y = margin.top + h - barH;
     bars += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="${CAT_HEX[i]}" rx="4"/>`;
-    bars += `<text x="${x + barW/2}" y="${y - 5}" text-anchor="middle" font-size="10" fill="#374151" font-weight="700">${catVals[i]}%</text>`;
-    // X label
+    bars += `<text x="${x + barW/2}" y="${y - 6}" text-anchor="middle" font-size="11" fill="#374151" font-weight="700">${catVals[i]}%</text>`;
+    // Rotated X label
     const lx = margin.left + i * gap + gap / 2;
-    bars += `<text x="${lx}" y="${margin.top + h + 14}" text-anchor="middle" font-size="9" fill="#374151">${labels[i]}</text>`;
+    const ly = margin.top + h + 12;
+    bars += `<text x="${lx}" y="${ly}" text-anchor="end" font-size="10.5" fill="#374151" font-weight="500" transform="rotate(-35 ${lx} ${ly})">${labels[i]}</text>`;
   }
 
-  // Y axis
   let yAxis = '';
   for (const v of [0, 25, 50, 75, 100]) {
     const y = margin.top + h - (v / 100) * h;
