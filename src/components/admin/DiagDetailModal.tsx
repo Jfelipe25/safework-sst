@@ -22,17 +22,31 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
 
   const radarData = useMemo(() =>
     CHECKLIST.map((cat, i) => ({
-      subject: cat.title.split('.')[1]?.trim().substring(0, 14) || cat.title,
+      subject: cat.title.split('.')[1]?.trim() || cat.title,
       value: catScores[cat.id] || 0,
       fullMark: 100,
     })), [catScores]);
 
   const barData = useMemo(() =>
     CHECKLIST.map((cat, i) => ({
-      name: cat.title.split('.')[1]?.trim().substring(0, 12) || cat.id,
+      name: (cat.title.split('.')[1]?.trim() || cat.id).substring(0, 10) + '…',
+      fullName: cat.title.split('.')[1]?.trim() || cat.id,
       value: catScores[cat.id] || 0,
       fill: CAT_HEX[i],
     })), [catScores]);
+
+  // Custom radar dot renderer with per-point colors
+  const renderRadarDot = (props: any) => {
+    const { cx, cy, index } = props;
+    if (cx == null || cy == null) return null;
+    return (
+      <circle
+        key={`dot-${index}`}
+        cx={cx} cy={cy} r={6}
+        fill={CAT_HEX[index]} stroke="#0f2d4a" strokeWidth={2}
+      />
+    );
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/70 backdrop-blur-sm p-4 md:p-8" onClick={onClose}>
