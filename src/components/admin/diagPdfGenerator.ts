@@ -183,8 +183,8 @@ export function downloadDiagHTML(diag: any, client: any) {
   <div style="text-align:center;margin-bottom:22px">
     <div style="display:inline-block;width:100px;height:100px;border-radius:50%;border:6px solid ${color};box-sizing:border-box;padding-top:16px">
       <div style="font-size:32px;font-weight:700;color:${color};line-height:1">${d.score}</div>
-      <div style="font-size:11px;color:#6b7280">/ 100 pts</div>
-      <div style="font-size:11px;font-weight:700;color:${color};margin-top:1px">Nivel ${lvlTxt}</div>
+      <div style="font-size:12.5px;color:#6b7280">/ 100 pts</div>
+      <div style="font-size:12.5px;font-weight:700;color:${color};margin-top:1px">Nivel ${lvlTxt}</div>
     </div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px">${metaHTML}</div>
