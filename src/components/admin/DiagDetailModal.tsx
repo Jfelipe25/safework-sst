@@ -164,8 +164,7 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
                     height={60}
                   />
                   <YAxis domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 9 }} tickFormatter={v => `${v}%`} />
-                  <Tooltip cursor={false} contentStyle={{ background: '#0A2540', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 8, color: 'white', fontSize: 12 }}
-                    formatter={(value: number, _name: string, props: any) => [`${value}%`, props.payload.fullName]} />
+                   <Tooltip content={<CustomTooltip />} cursor={false} />
                   <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                     {barData.map((entry, i) => (
                       <Cell key={i} fill={entry.fill} />
