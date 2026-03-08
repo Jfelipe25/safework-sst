@@ -19,7 +19,7 @@ export const CHECKLIST = [
     id: "implementacion",
     title: "2. Implementación y Operación",
     icon: "⚙️",
-    color: "#34D399",
+    color: "#10B981",
     items: [
       { id: "i1", text: "Existe un programa de capacitación en SST que incluye la inducción, re-inducción y formación continua.", pts: 3 },
       { id: "i2", text: "Está conformado y en funcionamiento el COPASST (10+ trabajadores) o Vigía SST (menos de 10 trabajadores).", pts: 3.5 },
