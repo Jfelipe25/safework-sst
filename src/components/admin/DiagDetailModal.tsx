@@ -192,7 +192,7 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
                   <div className="h-full rounded" style={{ width: `${s}%`, background: c }} />
                 </div>
                 {cat.items.map(item => {
-                  const ok = answers[item.id];
+                  const ok = answers[item.id] === "si" || answers[item.id] === true;
                   return (
                     <div key={item.id} className="flex gap-2 py-1 border-b border-white/[0.04] items-start">
                       <span className="flex-shrink-0 text-sm mt-0.5">{ok ? "✅" : "❌"}</span>

@@ -144,10 +144,10 @@ export function downloadDiagHTML(diag: any, client: any) {
     const s = catScores[cat.id] || 0;
     const c = s >= 80 ? "#059669" : s >= 50 ? "#D97706" : "#DC2626";
     const ptsTotal = cat.items.reduce((a, i) => a + i.pts, 0);
-    const ptsEarned = cat.items.filter(it => answers[it.id]).reduce((a, it) => a + it.pts, 0);
-    const answered = cat.items.filter(it => answers[it.id]).length;
+    const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
+    const answered = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length;
     const rows = cat.items.map(item => {
-      const ok = answers[item.id];
+      const ok = answers[item.id] === "si" || answers[item.id] === true;
       return `<tr style="border-bottom:1px solid #f3f4f6">
         <td style="padding:7px 12px;font-size:14px;color:#374151">${item.text}</td>
         <td style="padding:7px 12px;font-size:14.5px;text-align:center;color:${ok ? '#059669' : '#DC2626'};font-weight:700">${ok ? '✓' : '✗'}</td>
