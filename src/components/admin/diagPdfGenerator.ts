@@ -9,7 +9,7 @@ const SHORT_LABELS = ['Recursos', 'Gestión Integral', 'Gestión Salud', 'Peligr
 function generateRadarSVG(vals: number[], labels: string[], colors: string[] | null, size = 420): string {
   const width = size, height = size;
   const cx = width / 2, cy = height / 2;
-  const r = size / 2 - 60;
+  const r = size / 2 - 65;
   const n = vals.length;
   const angleStep = (2 * Math.PI) / n;
   const startAngle = -Math.PI / 2;
@@ -20,37 +20,49 @@ function generateRadarSVG(vals: number[], labels: string[], colors: string[] | n
     return { x: cx + dist * Math.cos(angle), y: cy + dist * Math.sin(angle) };
   };
 
-  // Concentric grid circles + scale labels
+  // Helper: polygon path at a given percentage
+  const polyAt = (pct: number) => {
+    const pts = [];
+    for (let i = 0; i < n; i++) {
+      const p = getPoint(i, pct);
+      pts.push(`${p.x},${p.y}`);
+    }
+    return pts.join(' ');
+  };
+
+  // Concentric POLYGON grids (matching Recharts style) + scale labels
   let gridLines = '';
-  for (const pct of [25, 50, 75, 100]) {
-    const rr = (pct / 100) * r;
-    gridLines += `<circle cx="${cx}" cy="${cy}" r="${rr}" fill="none" stroke="#d1d5db" stroke-width="0.7" stroke-dasharray="${pct < 100 ? '3,3' : 'none'}"/>`;
-    // Scale label on the 12 o'clock axis
-    gridLines += `<text x="${cx + 4}" y="${cy - rr + 1}" font-size="9" fill="#9ca3af" dominant-baseline="auto">${pct}%</text>`;
+  for (const pct of [20, 40, 60, 80, 100]) {
+    gridLines += `<polygon points="${polyAt(pct)}" fill="none" stroke="#cbd5e1" stroke-width="${pct === 100 ? '1' : '0.7'}" stroke-dasharray="${pct < 100 ? '4,3' : 'none'}"/>`;
+    // Scale label along the 12 o'clock axis
+    const ly = cy - (pct / 100) * r;
+    gridLines += `<text x="${cx + 5}" y="${ly - 2}" font-size="10" fill="#64748b" font-weight="500">${pct}</text>`;
   }
 
-  // Axis lines + labels
+  // Axis lines + outer labels
   let axisLines = '';
   for (let i = 0; i < n; i++) {
     const p = getPoint(i, 100);
-    axisLines += `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="#d1d5db" stroke-width="0.6"/>`;
-    const lp = getPoint(i, 118);
-    axisLines += `<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="central" font-size="11.5" fill="#374151" font-weight="600">${labels[i]}</text>`;
+    axisLines += `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="#cbd5e1" stroke-width="0.7"/>`;
+    const lp = getPoint(i, 122);
+    axisLines += `<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="central" font-size="12.5" fill="#1e293b" font-weight="700">${labels[i]}</text>`;
   }
 
+  // Data polygon
   const points = vals.map((v, i) => getPoint(i, v));
   const poly = points.map(p => `${p.x},${p.y}`).join(' ');
-  const dataPath = `<polygon points="${poly}" fill="rgba(59,130,246,0.15)" stroke="#3B82F6" stroke-width="2.5"/>`;
+  const dataPath = `<polygon points="${poly}" fill="rgba(59,130,246,0.18)" stroke="#3B82F6" stroke-width="2.5" stroke-linejoin="round"/>`;
 
+  // Dots with per-point colors
   const dots = points.map((p, i) =>
-    `<circle cx="${p.x}" cy="${p.y}" r="5.5" fill="${colors ? colors[i] : '#3B82F6'}" stroke="white" stroke-width="2"/>`
+    `<circle cx="${p.x}" cy="${p.y}" r="6" fill="${colors ? colors[i] : '#3B82F6'}" stroke="white" stroke-width="2.5"/>`
   ).join('');
 
-  // Value labels next to each dot
+  // Value labels near each dot
   const valueLabels = points.map((p, i) => {
     const angle = startAngle + i * angleStep;
-    const ox = Math.cos(angle) * 16, oy = Math.sin(angle) * 16;
-    return `<text x="${p.x + ox}" y="${p.y + oy}" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#1e3a5f" font-weight="700">${vals[i]}%</text>`;
+    const ox = Math.cos(angle) * 18, oy = Math.sin(angle) * 18;
+    return `<text x="${p.x + ox}" y="${p.y + oy}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0f172a" font-weight="700">${vals[i]}%</text>`;
   }).join('');
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
