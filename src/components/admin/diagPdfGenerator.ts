@@ -149,9 +149,9 @@ export function downloadDiagHTML(diag: any, client: any) {
     const rows = cat.items.map(item => {
       const ok = answers[item.id];
       return `<tr style="border-bottom:1px solid #f3f4f6">
-        <td style="padding:6px 10px;font-size:12.5px;color:#374151">${item.text}</td>
-        <td style="padding:6px 10px;font-size:13px;text-align:center;color:${ok ? '#059669' : '#DC2626'};font-weight:700">${ok ? '✓' : '✗'}</td>
-        <td style="padding:6px 10px;font-size:12px;text-align:center;color:#6b7280">${item.pts} pts</td>
+        <td style="padding:7px 12px;font-size:14px;color:#374151">${item.text}</td>
+        <td style="padding:7px 12px;font-size:14.5px;text-align:center;color:${ok ? '#059669' : '#DC2626'};font-weight:700">${ok ? '✓' : '✗'}</td>
+        <td style="padding:7px 12px;font-size:13.5px;text-align:center;color:#6b7280">${item.pts} pts</td>
       </tr>`;
     }).join('');
     return `<div style="margin-bottom:16px;break-inside:avoid">
