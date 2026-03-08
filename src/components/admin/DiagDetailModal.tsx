@@ -41,6 +41,37 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
       fill: CAT_HEX[i],
     })), [catScores]);
 
+  // Cycle (PHVA) data
+  const cycleColors: Record<string, string> = { "I. PLANEAR": "#3B82F6", "II. HACER": "#10B981", "III. VERIFICAR": "#8B5CF6", "IV. ACTUAR": "#06B6D4" };
+  const cycleData = useMemo(() => {
+    const map: Record<string, { total: number; earned: number }> = {};
+    CHECKLIST.forEach((cat) => {
+      if (!map[cat.cycle]) map[cat.cycle] = { total: 0, earned: 0 };
+      cat.items.forEach((item) => {
+        map[cat.cycle].total += item.pts;
+        if (answers[item.id] === "si" || answers[item.id] === true) map[cat.cycle].earned += item.pts;
+      });
+    });
+    return Object.entries(map).map(([cycle, { total, earned }]) => ({
+      name: cycle.replace(/^[IVX]+\.\s*/, ""),
+      value: total > 0 ? Math.round((earned / total) * 100) : 0,
+      color: cycleColors[cycle] || "#888",
+    }));
+  }, [answers]);
+
+  // Custom tooltip
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div style={{ background: "#0A2540", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 12, color: "white", padding: "8px 12px" }}>
+        <div style={{ marginBottom: 4, fontWeight: 600 }}>{label || payload[0]?.payload?.fullName || payload[0]?.payload?.name}</div>
+        {payload.map((p: any, i: number) => (
+          <div key={i}>{p.value}%</div>
+        ))}
+      </div>
+    );
+  };
+
   // Custom radar dot renderer with per-point colors
   const renderRadarDot = (props: any) => {
     const { cx, cy, index } = props;
