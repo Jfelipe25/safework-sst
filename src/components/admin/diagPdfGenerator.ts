@@ -135,8 +135,8 @@ export function downloadDiagHTML(diag: any, client: any) {
   ];
   const metaHTML = metaItems.map(([l, v]) =>
     `<div style="background:#f8fafc;padding:10px 14px;border-radius:6px;border:1px solid #e5e7eb">
-      <div style="font-size:11px;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:0.4px">${l}</div>
-      <div style="font-size:14px;font-weight:700;color:#0A2540;margin-top:3px">${v || '—'}</div>
+      <div style="font-size:12.5px;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:0.4px">${l}</div>
+      <div style="font-size:15.5px;font-weight:700;color:#0A2540;margin-top:3px">${v || '—'}</div>
     </div>`
   ).join('');
 
