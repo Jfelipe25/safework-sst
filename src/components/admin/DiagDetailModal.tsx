@@ -21,8 +21,8 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
   const lvlTxt = diag.level === "high" ? "Alto" : diag.level === "medium" ? "Medio" : "Bajo";
 
   const SHORT_LABELS = [
-    'Planificación', 'Implementación', 'Verificación',
-    'Mejoramiento', 'Gestión Riesgo', 'Medicina Trabajo'
+    'Recursos', 'Gestión Integral', 'Gestión Salud',
+    'Peligros/Riesgos', 'Amenazas', 'Verificación', 'Mejoramiento'
   ];
 
   const radarData = useMemo(() =>
