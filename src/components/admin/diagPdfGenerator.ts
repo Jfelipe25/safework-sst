@@ -4,9 +4,11 @@ import { toast } from "sonner";
 const CAT_HEX = ['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4'];
 const TOTAL_PTS = CHECKLIST.reduce((s, cat) => s + cat.items.reduce((ss, it) => ss + it.pts, 0), 0);
 
-function generateRadarSVG(catVals: number[], labels: string[], width = 460, height = 320): string {
-  const cx = width / 2, cy = height / 2 + 10;
-  const r = Math.min(cx, cy) - 50;
+const SHORT_LABELS = ['Planificación', 'Implementación', 'Verificación', 'Mejoramiento', 'Gestión Riesgo', 'Medicina Trabajo'];
+
+function generateRadarSVG(catVals: number[], labels: string[], width = 520, height = 380): string {
+  const cx = width / 2, cy = height / 2 + 5;
+  const r = Math.min(cx, cy) - 70;
   const n = catVals.length;
   const angleStep = (2 * Math.PI) / n;
   const startAngle = -Math.PI / 2;
@@ -17,30 +19,26 @@ function generateRadarSVG(catVals: number[], labels: string[], width = 460, heig
     return { x: cx + dist * Math.cos(angle), y: cy + dist * Math.sin(angle) };
   };
 
-  // Grid circles
   let gridLines = '';
   for (const pct of [25, 50, 75, 100]) {
     const rr = (pct / 100) * r;
     gridLines += `<circle cx="${cx}" cy="${cy}" r="${rr}" fill="none" stroke="#e5e7eb" stroke-width="0.8"/>`;
   }
 
-  // Axis lines and labels
   let axisLines = '';
   for (let i = 0; i < n; i++) {
     const p = getPoint(i, 100);
     axisLines += `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="#e5e7eb" stroke-width="0.6"/>`;
-    const lp = getPoint(i, 118);
-    axisLines += `<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#374151" font-weight="600">${labels[i]}</text>`;
+    const lp = getPoint(i, 125);
+    axisLines += `<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#374151" font-weight="600">${labels[i]}</text>`;
   }
 
-  // Data polygon
   const points = catVals.map((v, i) => getPoint(i, v));
   const poly = points.map(p => `${p.x},${p.y}`).join(' ');
   const dataPath = `<polygon points="${poly}" fill="rgba(59,130,246,0.12)" stroke="#3B82F6" stroke-width="2"/>`;
 
-  // Data dots with individual colors
   const dots = points.map((p, i) =>
-    `<circle cx="${p.x}" cy="${p.y}" r="5" fill="${CAT_HEX[i]}" stroke="white" stroke-width="2"/>`
+    `<circle cx="${p.x}" cy="${p.y}" r="6" fill="${CAT_HEX[i]}" stroke="white" stroke-width="2"/>`
   ).join('');
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
@@ -49,12 +47,12 @@ function generateRadarSVG(catVals: number[], labels: string[], width = 460, heig
   </svg>`;
 }
 
-function generateBarSVG(catVals: number[], labels: string[], width = 460, height = 300): string {
-  const margin = { top: 20, right: 20, bottom: 60, left: 45 };
+function generateBarSVG(catVals: number[], labels: string[], width = 520, height = 340): string {
+  const margin = { top: 25, right: 20, bottom: 80, left: 45 };
   const w = width - margin.left - margin.right;
   const h = height - margin.top - margin.bottom;
   const n = catVals.length;
-  const barW = Math.min(w / n * 0.65, 50);
+  const barW = Math.min(w / n * 0.6, 50);
   const gap = w / n;
 
   let bars = '';
@@ -63,13 +61,13 @@ function generateBarSVG(catVals: number[], labels: string[], width = 460, height
     const barH = (catVals[i] / 100) * h;
     const y = margin.top + h - barH;
     bars += `<rect x="${x}" y="${y}" width="${barW}" height="${barH}" fill="${CAT_HEX[i]}" rx="4"/>`;
-    bars += `<text x="${x + barW/2}" y="${y - 5}" text-anchor="middle" font-size="10" fill="#374151" font-weight="700">${catVals[i]}%</text>`;
-    // X label
+    bars += `<text x="${x + barW/2}" y="${y - 6}" text-anchor="middle" font-size="11" fill="#374151" font-weight="700">${catVals[i]}%</text>`;
+    // Rotated X label
     const lx = margin.left + i * gap + gap / 2;
-    bars += `<text x="${lx}" y="${margin.top + h + 14}" text-anchor="middle" font-size="9" fill="#374151">${labels[i]}</text>`;
+    const ly = margin.top + h + 12;
+    bars += `<text x="${lx}" y="${ly}" text-anchor="end" font-size="10.5" fill="#374151" font-weight="500" transform="rotate(-35 ${lx} ${ly})">${labels[i]}</text>`;
   }
 
-  // Y axis
   let yAxis = '';
   for (const v of [0, 25, 50, 75, 100]) {
     const y = margin.top + h - (v / 100) * h;
@@ -92,10 +90,7 @@ export function downloadDiagHTML(diag: any, client: any) {
   const lvlTxt = d.level === "high" ? "Alto" : d.level === "medium" ? "Medio" : "Bajo";
 
   const catVals = CHECKLIST.map(c => catScores[c.id] || 0);
-  const catLabels = CHECKLIST.map(c => {
-    const t = c.title.split('.')[1]?.trim() || c.id;
-    return t.length > 12 ? t.substring(0, 12) + '…' : t;
-  });
+  const catLabels = SHORT_LABELS;
 
   const radarSVG = generateRadarSVG(catVals, catLabels);
   const barSVG = generateBarSVG(catVals, catLabels);
