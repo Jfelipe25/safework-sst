@@ -58,16 +58,9 @@ function generateRadarSVG(vals: number[], labels: string[], colors: string[] | n
     `<circle cx="${p.x}" cy="${p.y}" r="6" fill="${colors ? colors[i] : '#3B82F6'}" stroke="white" stroke-width="2.5"/>`
   ).join('');
 
-  // Value labels near each dot
-  const valueLabels = points.map((p, i) => {
-    const angle = startAngle + i * angleStep;
-    const ox = Math.cos(angle) * 18, oy = Math.sin(angle) * 18;
-    return `<text x="${p.x + ox}" y="${p.y + oy}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#0f172a" font-weight="700">${vals[i]}%</text>`;
-  }).join('');
-
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
     <rect width="${width}" height="${height}" fill="white" rx="6"/>
-    ${gridLines}${axisLines}${dataPath}${dots}${valueLabels}
+    ${gridLines}${axisLines}${dataPath}${dots}
   </svg>`;
 }
 
@@ -217,13 +210,13 @@ export function downloadDiagHTML(diag: any, client: any) {
       const rows = cat.items.map(item => {
         const ok = answers[item.id] === "si" || answers[item.id] === true;
         const na = answers[item.id] === "na";
-        return `<tr style="border-bottom:1px solid #f3f4f6;${na ? 'opacity:0.4' : ''}">
+        return `<tr style="border-bottom:1px solid #f3f4f6;${na ? 'opacity:0.4' : ''}; page-break-inside:avoid; break-inside:avoid">
           <td style="padding:7px 12px;font-size:14px;color:#374151">${item.text}${na ? ' <em style="color:#9ca3af;font-size:12px">(N/A)</em>' : ''}</td>
           <td style="padding:7px 12px;font-size:14.5px;text-align:center;color:${na ? '#9ca3af' : ok ? '#059669' : '#DC2626'};font-weight:700">${na ? '⊘' : ok ? '✓' : '✗'}</td>
           <td style="padding:7px 12px;font-size:13.5px;text-align:center;color:#6b7280">${item.pts} pts</td>
         </tr>`;
       }).join('');
-      return `<div style="margin-bottom:16px;page-break-inside:avoid;break-inside:avoid">
+      return `<div style="margin-bottom:12px;page-break-inside:avoid;break-inside:avoid">
         <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:9px 14px;border-radius:5px;border-left:4px solid ${c};margin-bottom:5px">
           <span style="font-size:15.5px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
           <div style="text-align:right">
@@ -249,10 +242,10 @@ export function downloadDiagHTML(diag: any, client: any) {
 <title>Diagnóstico SST — ${(u?.empresa || '').replace(/</g, '&lt;')}</title>
 <style>
   body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;color:#0A2540;font-size:14.5px}
-  @page{size:A4;margin:15mm 10mm}
+  @page{size:A4;margin:12mm 10mm}
   @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-  .cycle-group{page-break-inside:avoid;break-inside:avoid}
-  .cat-block{page-break-inside:avoid;break-inside:avoid}
+  table{page-break-inside:auto}
+  tr{page-break-inside:avoid;break-inside:avoid}
 </style>
 </head><body>
 <div style="background:linear-gradient(135deg,#0A2540,#1E3A8A);color:white;padding:28px 40px">
