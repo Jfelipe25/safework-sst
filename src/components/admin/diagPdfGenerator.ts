@@ -134,9 +134,9 @@ export function downloadDiagHTML(diag: any, client: any) {
     ['Riesgo', u?.riesgo], ['ARL', u?.arl], ['Ciudad', u?.ciudad]
   ];
   const metaHTML = metaItems.map(([l, v]) =>
-    `<div style="background:#f8fafc;padding:9px 12px;border-radius:6px;border:1px solid #e5e7eb">
-      <div style="font-size:9px;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:0.4px">${l}</div>
-      <div style="font-size:12px;font-weight:700;color:#0A2540;margin-top:2px">${v || '—'}</div>
+    `<div style="background:#f8fafc;padding:10px 14px;border-radius:6px;border:1px solid #e5e7eb">
+      <div style="font-size:11px;color:#9ca3af;font-weight:700;text-transform:uppercase;letter-spacing:0.4px">${l}</div>
+      <div style="font-size:14px;font-weight:700;color:#0A2540;margin-top:3px">${v || '—'}</div>
     </div>`
   ).join('');
 
