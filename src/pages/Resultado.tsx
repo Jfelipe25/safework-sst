@@ -6,12 +6,8 @@ import { Button } from "@/components/ui/button";
 import { CHECKLIST, CAT_COLORS, getCatTotalPts } from "@/data/checklist";
 import { supabase } from "@/integrations/supabase/client";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell } from "recharts";
-
-const Resultado = () => {
-  const { id } = useParams();
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const [diag, setDiag] = useState<any>(null);
+import { Phone, Check } from "lucide-react";
+import { toast } from "sonner";
 
   useEffect(() => {
     if (id) fetchDiag();
