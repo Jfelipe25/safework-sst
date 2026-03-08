@@ -37,7 +37,7 @@ export const CHECKLIST = [
     id: "verificacion",
     title: "3. Verificación y Seguimiento",
     icon: "✔️",
-    color: "#FBBF24",
+    color: "#F59E0B",
     items: [
       { id: "v1", text: "La empresa realiza inspecciones periódicas de las condiciones de trabajo y del ambiente laboral.", pts: 2.5 },
       { id: "v2", text: "Se tiene un sistema de reporte e investigación de accidentes e incidentes de trabajo.", pts: 3.5 },
