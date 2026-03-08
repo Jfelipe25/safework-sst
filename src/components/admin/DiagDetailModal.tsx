@@ -48,6 +48,7 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
     CHECKLIST.forEach((cat) => {
       if (!map[cat.cycle]) map[cat.cycle] = { total: 0, earned: 0 };
       cat.items.forEach((item) => {
+        if (answers[item.id] === "na") return; // skip NA
         map[cat.cycle].total += item.pts;
         if (answers[item.id] === "si" || answers[item.id] === true) map[cat.cycle].earned += item.pts;
       });
@@ -258,12 +259,17 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
                   <div className="h-full rounded" style={{ width: `${s}%`, background: c }} />
                 </div>
                 {cat.items.map(item => {
-                  const ok = answers[item.id] === "si" || answers[item.id] === true;
+                  const ans = answers[item.id];
+                  const ok = ans === "si" || ans === true;
+                  const na = ans === "na";
                   return (
-                    <div key={item.id} className="flex gap-2 py-1 border-b border-white/[0.04] items-start">
-                      <span className="flex-shrink-0 text-sm mt-0.5">{ok ? "✅" : "❌"}</span>
-                      <span className={`text-[0.81rem] flex-1 leading-relaxed ${ok ? "text-white/80" : "text-white/40"}`}>{item.text}</span>
-                      <span className={`flex-shrink-0 text-[0.72rem] font-bold whitespace-nowrap ${ok ? "text-emerald-400" : "text-red-400"}`}>{item.pts} pts</span>
+                    <div key={item.id} className={`flex gap-2 py-1 border-b border-white/[0.04] items-start ${na ? "opacity-40" : ""}`}>
+                      <span className="flex-shrink-0 text-sm mt-0.5">{na ? "⊘" : ok ? "✅" : "❌"}</span>
+                      <span className={`text-[0.81rem] flex-1 leading-relaxed ${na ? "text-white/30 italic" : ok ? "text-white/80" : "text-white/40"}`}>
+                        {item.text}
+                        {na && <span className="ml-2 text-[0.65rem] text-white/25">(No aplica)</span>}
+                      </span>
+                      <span className={`flex-shrink-0 text-[0.72rem] font-bold whitespace-nowrap ${na ? "text-white/20" : ok ? "text-emerald-400" : "text-red-400"}`}>{item.pts} pts</span>
                     </div>
                   );
                 })}
