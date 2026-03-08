@@ -20,16 +20,21 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
   const color = diag.level === "high" ? "#059669" : diag.level === "medium" ? "#D97706" : "#DC2626";
   const lvlTxt = diag.level === "high" ? "Alto" : diag.level === "medium" ? "Medio" : "Bajo";
 
+  const SHORT_LABELS = [
+    'Planificación', 'Implementación', 'Verificación',
+    'Mejoramiento', 'Gestión Riesgo', 'Medicina Trabajo'
+  ];
+
   const radarData = useMemo(() =>
     CHECKLIST.map((cat, i) => ({
-      subject: cat.title.split('.')[1]?.trim() || cat.title,
+      subject: SHORT_LABELS[i],
       value: catScores[cat.id] || 0,
       fullMark: 100,
     })), [catScores]);
 
   const barData = useMemo(() =>
     CHECKLIST.map((cat, i) => ({
-      name: (cat.title.split('.')[1]?.trim() || cat.id).substring(0, 10) + '…',
+      name: SHORT_LABELS[i],
       fullName: cat.title.split('.')[1]?.trim() || cat.id,
       value: catScores[cat.id] || 0,
       fill: CAT_HEX[i],
