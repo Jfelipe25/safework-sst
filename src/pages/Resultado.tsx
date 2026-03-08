@@ -101,6 +101,36 @@ const Resultado = () => {
     color: CAT_COLORS[cat.id],
   }));
 
+  // Cycle (PHVA) scores
+  const cycleColors: Record<string, string> = { "I. PLANEAR": "#3B82F6", "II. HACER": "#10B981", "III. VERIFICAR": "#8B5CF6", "IV. ACTUAR": "#06B6D4" };
+  const cycleMap: Record<string, { total: number; earned: number }> = {};
+  CHECKLIST.forEach((cat) => {
+    const cycle = cat.cycle;
+    if (!cycleMap[cycle]) cycleMap[cycle] = { total: 0, earned: 0 };
+    const answers = (diag.answers || {}) as Record<string, any>;
+    cat.items.forEach((item) => {
+      cycleMap[cycle].total += item.pts;
+      if (answers[item.id] === "si" || answers[item.id] === true) cycleMap[cycle].earned += item.pts;
+    });
+  });
+  const cycleData = Object.entries(cycleMap).map(([cycle, { total, earned }]) => ({
+    name: cycle.replace(/^[IVX]+\.\s*/, ""),
+    value: total > 0 ? Math.round((earned / total) * 100) : 0,
+    color: cycleColors[cycle] || "#888",
+  }));
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div className="bg-white border border-border rounded-lg shadow-lg px-3 py-2 text-xs">
+        <div className="font-semibold text-foreground mb-0.5">{label || payload[0]?.payload?.name}</div>
+        {payload.map((p: any, i: number) => (
+          <div key={i} className="text-muted-foreground">{p.value}%</div>
+        ))}
+      </div>
+    );
+  };
+
   const msg = level === "high"
     ? "¡Excelente resultado! Tu empresa tiene un alto nivel de cumplimiento del SG-SST."
     : level === "medium"
