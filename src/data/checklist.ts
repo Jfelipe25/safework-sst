@@ -3,7 +3,7 @@ export const CHECKLIST = [
     id: "planeacion",
     title: "1. Planificación del SG-SST",
     icon: "📌",
-    color: "#60A5FA",
+    color: "#3B82F6",
     items: [
       { id: "p1", text: "La empresa cuenta con una política de SST documentada, firmada por la alta dirección y comunicada a todos los trabajadores.", pts: 2.5 },
       { id: "p2", text: "Existe una asignación y comunicación de responsabilidades en SST para todos los niveles de la organización.", pts: 2.5 },
