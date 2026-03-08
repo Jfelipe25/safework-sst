@@ -80,12 +80,13 @@ const Resultado = () => {
   const levelTxt = level === "high" ? "🟢 Nivel Alto de Cumplimiento" : level === "medium" ? "🟡 Nivel Medio de Cumplimiento" : "🔴 Nivel Bajo de Cumplimiento";
 
   const shortNames: Record<string, string> = {
-    planeacion: "Planificación",
-    implementacion: "Implementación",
+    recursos: "Recursos",
+    "gestion-integral": "Gestión Integral",
+    "gestion-salud": "Gestión Salud",
+    "gestion-peligros": "Peligros/Riesgos",
+    "gestion-amenazas": "Amenazas",
     verificacion: "Verificación",
     mejoramiento: "Mejoramiento",
-    gestion: "Gestión Riesgo",
-    vigilancia: "Medicina Trabajo",
   };
 
   const radarData = CHECKLIST.map((cat) => ({
