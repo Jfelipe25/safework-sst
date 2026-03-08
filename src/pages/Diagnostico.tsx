@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
-import { CHECKLIST, getCatTotalPts } from "@/data/checklist";
+import { CHECKLIST, getCatTotalPts, CYCLE_LABELS } from "@/data/checklist";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
