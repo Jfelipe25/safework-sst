@@ -16,6 +16,7 @@ const Resultado = () => {
   const [diag, setDiag] = useState<any>(null);
   const [sending, setSending] = useState(false);
 
+  useEffect(() => {
     if (id) fetchDiag();
   }, [id]);
 
