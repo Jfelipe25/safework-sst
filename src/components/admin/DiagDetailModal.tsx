@@ -182,7 +182,7 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
                 <div className="flex justify-between items-center mb-1 flex-wrap gap-1">
                   <span className="text-sm font-semibold text-white/90">{cat.icon} {cat.title}</span>
                   <div className="flex gap-3 items-center">
-                    <span className="text-[0.7rem] text-white/40">{cat.items.filter(it => answers[it.id]).length}/{cat.items.length} ítems</span>
+                    <span className="text-[0.7rem] text-white/40">{cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length}/{cat.items.length} ítems</span>
                     <span className="text-[0.75rem] text-white/45">{ptsEarned.toFixed(1)}/{ptsTotal} pts</span>
                     <span className="text-[0.7rem] text-white/35">Peso: {weight}%</span>
                     <strong className="text-base" style={{ color: c }}>{s}%</strong>
