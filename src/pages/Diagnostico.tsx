@@ -44,7 +44,7 @@ const Diagnostico = () => {
     });
 
     const score = Math.round(earned);
-    const level = score >= 80 ? "high" : score >= 50 ? "medium" : "low";
+    const level = score >= 86 ? "high" : score >= 60 ? "medium" : "low";
 
     const { data, error } = await supabase.from("diagnostics").insert({
       user_id: user!.id,
