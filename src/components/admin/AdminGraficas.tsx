@@ -100,8 +100,8 @@ const AdminGraficas = ({ data }: { data: AdminData }) => {
           <ResponsiveContainer width="100%" height={240}>
             <RadarChart data={catAvgs}>
               <PolarGrid stroke="rgba(255,255,255,0.1)" />
-              <PolarAngleAxis dataKey="category" tick={{ fontSize: 9, fill: "rgba(255,255,255,0.55)" }} />
-              <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 8, fill: "rgba(255,255,255,0.4)" }} />
+              <PolarAngleAxis dataKey="category" tick={{ fontSize: 10, fill: "rgba(255,255,255,0.65)" }} />
+              <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 9, fill: "rgba(255,255,255,0.5)" }} />
               <Radar dataKey="value" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.2} strokeWidth={2} />
             </RadarChart>
           </ResponsiveContainer>
