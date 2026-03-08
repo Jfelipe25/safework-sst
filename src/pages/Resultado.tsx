@@ -9,7 +9,13 @@ import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Responsi
 import { Phone, Check } from "lucide-react";
 import { toast } from "sonner";
 
-  useEffect(() => {
+const Resultado = () => {
+  const { id } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [diag, setDiag] = useState<any>(null);
+  const [sending, setSending] = useState(false);
+
     if (id) fetchDiag();
   }, [id]);
 
