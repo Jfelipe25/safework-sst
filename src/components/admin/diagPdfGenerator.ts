@@ -165,31 +165,46 @@ export function downloadDiagHTML(diag: any, client: any) {
     </div>`
   ).join('');
 
-  const catRows = CHECKLIST.map(cat => {
-    const s = catScores[cat.id] || 0;
-    const c = s >= 80 ? "#059669" : s >= 50 ? "#D97706" : "#DC2626";
-    const ptsTotal = cat.items.reduce((a, i) => a + i.pts, 0);
-    const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
-    const answered = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length;
-    const naCount = cat.items.filter(it => answers[it.id] === "na").length;
-    const rows = cat.items.map(item => {
-      const ok = answers[item.id] === "si" || answers[item.id] === true;
-      const na = answers[item.id] === "na";
-      return `<tr style="border-bottom:1px solid #f3f4f6;${na ? 'opacity:0.4' : ''}">
-        <td style="padding:7px 12px;font-size:14px;color:#374151">${item.text}${na ? ' <em style="color:#9ca3af;font-size:12px">(N/A)</em>' : ''}</td>
-        <td style="padding:7px 12px;font-size:14.5px;text-align:center;color:${na ? '#9ca3af' : ok ? '#059669' : '#DC2626'};font-weight:700">${na ? '⊘' : ok ? '✓' : '✗'}</td>
-        <td style="padding:7px 12px;font-size:13.5px;text-align:center;color:#6b7280">${item.pts} pts</td>
-      </tr>`;
-    }).join('');
-    return `<div style="margin-bottom:16px;break-inside:avoid">
-      <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:9px 14px;border-radius:5px;border-left:4px solid ${c};margin-bottom:5px">
-        <span style="font-size:15.5px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
-        <div style="text-align:right">
-          <span style="font-size:15.5px;font-weight:700;color:${c}">${s}%</span>
-          <span style="font-size:12.5px;color:#9ca3af;margin-left:8px">${answered}/${cat.items.length} ítems${naCount ? ` · ${naCount} N/A` : ''} · ${ptsEarned.toFixed(1)}/${ptsTotal} pts</span>
+  // Group categories by cycle for the detail section
+  const catRows = Object.entries(CYCLE_LABELS).map(([cycleKey, cycleLabel]) => {
+    const cycleCats = CHECKLIST.filter(cat => cat.cycle === cycleKey);
+    if (cycleCats.length === 0) return '';
+    const cColor = CYCLE_HEX[cycleKey] || '#888';
+
+    const catHTML = cycleCats.map(cat => {
+      const s = catScores[cat.id] || 0;
+      const c = s >= 80 ? "#059669" : s >= 50 ? "#D97706" : "#DC2626";
+      const ptsTotal = cat.items.reduce((a, i) => a + i.pts, 0);
+      const ptsEarned = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).reduce((a, it) => a + it.pts, 0);
+      const answered = cat.items.filter(it => answers[it.id] === "si" || answers[it.id] === true).length;
+      const naCount = cat.items.filter(it => answers[it.id] === "na").length;
+      const rows = cat.items.map(item => {
+        const ok = answers[item.id] === "si" || answers[item.id] === true;
+        const na = answers[item.id] === "na";
+        return `<tr style="border-bottom:1px solid #f3f4f6;${na ? 'opacity:0.4' : ''}">
+          <td style="padding:7px 12px;font-size:14px;color:#374151">${item.text}${na ? ' <em style="color:#9ca3af;font-size:12px">(N/A)</em>' : ''}</td>
+          <td style="padding:7px 12px;font-size:14.5px;text-align:center;color:${na ? '#9ca3af' : ok ? '#059669' : '#DC2626'};font-weight:700">${na ? '⊘' : ok ? '✓' : '✗'}</td>
+          <td style="padding:7px 12px;font-size:13.5px;text-align:center;color:#6b7280">${item.pts} pts</td>
+        </tr>`;
+      }).join('');
+      return `<div style="margin-bottom:16px;break-inside:avoid">
+        <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:9px 14px;border-radius:5px;border-left:4px solid ${c};margin-bottom:5px">
+          <span style="font-size:15.5px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
+          <div style="text-align:right">
+            <span style="font-size:15.5px;font-weight:700;color:${c}">${s}%</span>
+            <span style="font-size:12.5px;color:#9ca3af;margin-left:8px">${answered}/${cat.items.length} ítems${naCount ? ` · ${naCount} N/A` : ''} · ${ptsEarned.toFixed(1)}/${ptsTotal} pts</span>
+          </div>
         </div>
+        <table style="width:100%;border-collapse:collapse">${rows}</table>
+      </div>`;
+    }).join('');
+
+    return `<div style="margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid ${cColor}">
+        <div style="width:10px;height:10px;border-radius:50%;background:${cColor}"></div>
+        <span style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:${cColor}">${cycleKey} — ${cycleLabel}</span>
       </div>
-      <table style="width:100%;border-collapse:collapse">${rows}</table>
+      <div style="padding-left:8px;border-left:3px solid ${cColor}">${catHTML}</div>
     </div>`;
   }).join('');
 
