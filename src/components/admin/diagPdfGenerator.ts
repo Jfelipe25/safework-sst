@@ -199,7 +199,7 @@ export function downloadDiagHTML(diag: any, client: any) {
           <td style="padding:7px 12px;font-size:13.5px;text-align:center;color:#6b7280">${item.pts} pts</td>
         </tr>`;
       }).join('');
-      return `<div style="margin-bottom:16px;break-inside:avoid">
+      return `<div style="margin-bottom:16px;page-break-inside:avoid;break-inside:avoid">
         <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:9px 14px;border-radius:5px;border-left:4px solid ${c};margin-bottom:5px">
           <span style="font-size:15.5px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
           <div style="text-align:right">
