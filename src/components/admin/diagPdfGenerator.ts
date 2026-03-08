@@ -176,8 +176,8 @@ export function downloadDiagHTML(diag: any, client: any) {
 </style>
 </head><body>
 <div style="background:linear-gradient(135deg,#0A2540,#1E3A8A);color:white;padding:28px 40px">
-  <h1 style="margin:0;font-size:22px;font-weight:700">Diagnóstico SG-SST — ${u?.empresa || ''}</h1>
-  <p style="margin:6px 0 0;opacity:0.75;font-size:13px">${u?.nombre || ''} &nbsp;·&nbsp; ${d.fecha} &nbsp;·&nbsp; SafeWork SST Consultoría</p>
+  <h1 style="margin:0;font-size:24px;font-weight:700">Diagnóstico SG-SST — ${u?.empresa || ''}</h1>
+  <p style="margin:6px 0 0;opacity:0.75;font-size:14.5px">${u?.nombre || ''} &nbsp;·&nbsp; ${d.fecha} &nbsp;·&nbsp; SafeWork SST Consultoría</p>
 </div>
 <div style="padding:28px 40px">
   <div style="text-align:center;margin-bottom:22px">
