@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { CHECKLIST } from "@/data/checklist";
+import { CHECKLIST, CYCLE_LABELS } from "@/data/checklist";
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
