@@ -6,9 +6,10 @@ const CYCLE_HEX: Record<string, string> = { "I. PLANEAR": "#3B82F6", "II. HACER"
 const TOTAL_PTS = CHECKLIST.reduce((s, cat) => s + cat.items.reduce((ss, it) => ss + it.pts, 0), 0);
 const SHORT_LABELS = ['Recursos', 'Gestión Integral', 'Gestión Salud', 'Peligros/Riesgos', 'Amenazas', 'Verificación', 'Mejoramiento'];
 
-function generateRadarSVG(vals: number[], labels: string[], colors: string[] | null, width = 520, height = 380): string {
-  const cx = width / 2, cy = height / 2 + 5;
-  const r = Math.min(cx, cy) - 70;
+function generateRadarSVG(vals: number[], labels: string[], colors: string[] | null, size = 420): string {
+  const width = size, height = size;
+  const cx = width / 2, cy = height / 2;
+  const r = size / 2 - 60;
   const n = vals.length;
   const angleStep = (2 * Math.PI) / n;
   const startAngle = -Math.PI / 2;
@@ -19,31 +20,42 @@ function generateRadarSVG(vals: number[], labels: string[], colors: string[] | n
     return { x: cx + dist * Math.cos(angle), y: cy + dist * Math.sin(angle) };
   };
 
+  // Concentric grid circles + scale labels
   let gridLines = '';
   for (const pct of [25, 50, 75, 100]) {
     const rr = (pct / 100) * r;
-    gridLines += `<circle cx="${cx}" cy="${cy}" r="${rr}" fill="none" stroke="#e5e7eb" stroke-width="0.8"/>`;
+    gridLines += `<circle cx="${cx}" cy="${cy}" r="${rr}" fill="none" stroke="#d1d5db" stroke-width="0.7" stroke-dasharray="${pct < 100 ? '3,3' : 'none'}"/>`;
+    // Scale label on the 12 o'clock axis
+    gridLines += `<text x="${cx + 4}" y="${cy - rr + 1}" font-size="9" fill="#9ca3af" dominant-baseline="auto">${pct}%</text>`;
   }
 
+  // Axis lines + labels
   let axisLines = '';
   for (let i = 0; i < n; i++) {
     const p = getPoint(i, 100);
-    axisLines += `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="#e5e7eb" stroke-width="0.6"/>`;
-    const lp = getPoint(i, 125);
-    axisLines += `<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#374151" font-weight="600">${labels[i]}</text>`;
+    axisLines += `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="#d1d5db" stroke-width="0.6"/>`;
+    const lp = getPoint(i, 118);
+    axisLines += `<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="central" font-size="11.5" fill="#374151" font-weight="600">${labels[i]}</text>`;
   }
 
   const points = vals.map((v, i) => getPoint(i, v));
   const poly = points.map(p => `${p.x},${p.y}`).join(' ');
-  const dataPath = `<polygon points="${poly}" fill="rgba(59,130,246,0.12)" stroke="#3B82F6" stroke-width="2"/>`;
+  const dataPath = `<polygon points="${poly}" fill="rgba(59,130,246,0.15)" stroke="#3B82F6" stroke-width="2.5"/>`;
 
   const dots = points.map((p, i) =>
-    `<circle cx="${p.x}" cy="${p.y}" r="6" fill="${colors ? colors[i] : '#3B82F6'}" stroke="white" stroke-width="2"/>`
+    `<circle cx="${p.x}" cy="${p.y}" r="5.5" fill="${colors ? colors[i] : '#3B82F6'}" stroke="white" stroke-width="2"/>`
   ).join('');
 
+  // Value labels next to each dot
+  const valueLabels = points.map((p, i) => {
+    const angle = startAngle + i * angleStep;
+    const ox = Math.cos(angle) * 16, oy = Math.sin(angle) * 16;
+    return `<text x="${p.x + ox}" y="${p.y + oy}" text-anchor="middle" dominant-baseline="central" font-size="10.5" fill="#1e3a5f" font-weight="700">${vals[i]}%</text>`;
+  }).join('');
+
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-    <rect width="${width}" height="${height}" fill="white"/>
-    ${gridLines}${axisLines}${dataPath}${dots}
+    <rect width="${width}" height="${height}" fill="white" rx="6"/>
+    ${gridLines}${axisLines}${dataPath}${dots}${valueLabels}
   </svg>`;
 }
 
