@@ -149,17 +149,17 @@ export function downloadDiagHTML(diag: any, client: any) {
     const rows = cat.items.map(item => {
       const ok = answers[item.id];
       return `<tr style="border-bottom:1px solid #f3f4f6">
-        <td style="padding:5px 8px;font-size:10.5px;color:#374151">${item.text}</td>
-        <td style="padding:5px 8px;font-size:11px;text-align:center;color:${ok ? '#059669' : '#DC2626'};font-weight:700">${ok ? '✓' : '✗'}</td>
-        <td style="padding:5px 8px;font-size:10px;text-align:center;color:#6b7280">${item.pts} pts</td>
+        <td style="padding:6px 10px;font-size:12.5px;color:#374151">${item.text}</td>
+        <td style="padding:6px 10px;font-size:13px;text-align:center;color:${ok ? '#059669' : '#DC2626'};font-weight:700">${ok ? '✓' : '✗'}</td>
+        <td style="padding:6px 10px;font-size:12px;text-align:center;color:#6b7280">${item.pts} pts</td>
       </tr>`;
     }).join('');
-    return `<div style="margin-bottom:14px;break-inside:avoid">
-      <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:7px 12px;border-radius:5px;border-left:4px solid ${c};margin-bottom:4px">
-        <span style="font-size:12px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
+    return `<div style="margin-bottom:16px;break-inside:avoid">
+      <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;padding:9px 14px;border-radius:5px;border-left:4px solid ${c};margin-bottom:5px">
+        <span style="font-size:14px;font-weight:700;color:#0A2540">${cat.icon} ${cat.title}</span>
         <div style="text-align:right">
-          <span style="font-size:12px;font-weight:700;color:${c}">${s}%</span>
-          <span style="font-size:9px;color:#9ca3af;margin-left:8px">${answered}/${cat.items.length} ítems · ${ptsEarned.toFixed(1)}/${ptsTotal} pts</span>
+          <span style="font-size:14px;font-weight:700;color:${c}">${s}%</span>
+          <span style="font-size:11px;color:#9ca3af;margin-left:8px">${answered}/${cat.items.length} ítems · ${ptsEarned.toFixed(1)}/${ptsTotal} pts</span>
         </div>
       </div>
       <table style="width:100%;border-collapse:collapse">${rows}</table>
