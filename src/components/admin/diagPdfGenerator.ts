@@ -4,9 +4,11 @@ import { toast } from "sonner";
 const CAT_HEX = ['#3B82F6','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4'];
 const TOTAL_PTS = CHECKLIST.reduce((s, cat) => s + cat.items.reduce((ss, it) => ss + it.pts, 0), 0);
 
-function generateRadarSVG(catVals: number[], labels: string[], width = 460, height = 320): string {
-  const cx = width / 2, cy = height / 2 + 10;
-  const r = Math.min(cx, cy) - 50;
+const SHORT_LABELS = ['Planificación', 'Implementación', 'Verificación', 'Mejoramiento', 'Gestión Riesgo', 'Medicina Trabajo'];
+
+function generateRadarSVG(catVals: number[], labels: string[], width = 520, height = 380): string {
+  const cx = width / 2, cy = height / 2 + 5;
+  const r = Math.min(cx, cy) - 70;
   const n = catVals.length;
   const angleStep = (2 * Math.PI) / n;
   const startAngle = -Math.PI / 2;
@@ -17,30 +19,26 @@ function generateRadarSVG(catVals: number[], labels: string[], width = 460, heig
     return { x: cx + dist * Math.cos(angle), y: cy + dist * Math.sin(angle) };
   };
 
-  // Grid circles
   let gridLines = '';
   for (const pct of [25, 50, 75, 100]) {
     const rr = (pct / 100) * r;
     gridLines += `<circle cx="${cx}" cy="${cy}" r="${rr}" fill="none" stroke="#e5e7eb" stroke-width="0.8"/>`;
   }
 
-  // Axis lines and labels
   let axisLines = '';
   for (let i = 0; i < n; i++) {
     const p = getPoint(i, 100);
     axisLines += `<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="#e5e7eb" stroke-width="0.6"/>`;
-    const lp = getPoint(i, 118);
-    axisLines += `<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#374151" font-weight="600">${labels[i]}</text>`;
+    const lp = getPoint(i, 125);
+    axisLines += `<text x="${lp.x}" y="${lp.y}" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#374151" font-weight="600">${labels[i]}</text>`;
   }
 
-  // Data polygon
   const points = catVals.map((v, i) => getPoint(i, v));
   const poly = points.map(p => `${p.x},${p.y}`).join(' ');
   const dataPath = `<polygon points="${poly}" fill="rgba(59,130,246,0.12)" stroke="#3B82F6" stroke-width="2"/>`;
 
-  // Data dots with individual colors
   const dots = points.map((p, i) =>
-    `<circle cx="${p.x}" cy="${p.y}" r="5" fill="${CAT_HEX[i]}" stroke="white" stroke-width="2"/>`
+    `<circle cx="${p.x}" cy="${p.y}" r="6" fill="${CAT_HEX[i]}" stroke="white" stroke-width="2"/>`
   ).join('');
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
