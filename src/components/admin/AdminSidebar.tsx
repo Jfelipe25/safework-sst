@@ -9,9 +9,10 @@ interface Props {
 const items = [
   { id: "dashboard", icon: "📊", label: "Dashboard" },
   { id: "diagnosticos", icon: "📋", label: "Diagnósticos" },
+  { id: "graficas", icon: "📈", label: "Gráficas" },
   { id: "clientes", icon: "👥", label: "Clientes" },
-  { id: "trazabilidad", icon: "📍", label: "Trazabilidad" },
   { id: "notificaciones", icon: "📨", label: "Notificaciones" },
+  { id: "trazabilidad", icon: "📍", label: "Trazabilidad" },
 ];
 
 const AdminSidebar = ({ active, onNavigate, onLogout }: Props) => {
