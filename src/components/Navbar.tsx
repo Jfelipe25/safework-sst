@@ -44,13 +44,13 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-3">
           {user ? (
             <>
+              <span className="text-sm font-medium text-foreground">{profile?.nombre}</span>
               {role === "admin" && (
                 <Button variant="ghost" size="sm" onClick={() => navigate("/admin")}>Panel Admin</Button>
               )}
               {role === "client" && (
                 <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>Mi Dashboard</Button>
               )}
-              <span className="text-sm text-muted-foreground">{profile?.nombre}</span>
               <Button variant="ghost" size="sm" onClick={handleLogout}>Cerrar Sesión</Button>
             </>
           ) : (
