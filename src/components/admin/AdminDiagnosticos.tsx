@@ -1,0 +1,82 @@
+import { useState } from "react";
+import { AdminData } from "@/pages/Admin";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+const AdminDiagnosticos = ({ data, onRefresh }: { data: AdminData; onRefresh: () => void }) => {
+  const { diagnostics, clients } = data;
+  const [search, setSearch] = useState("");
+  const [filterLevel, setFilterLevel] = useState("");
+
+  const filtered = diagnostics.filter((d) => {
+    const c = clients.find((cl) => cl.user_id === d.user_id);
+    const hay = [c?.nombre, c?.empresa, c?.ciudad].join(" ").toLowerCase();
+    if (search && !hay.includes(search.toLowerCase())) return false;
+    if (filterLevel && d.level !== filterLevel) return false;
+    return true;
+  });
+
+  const deleteDiag = async (id: string) => {
+    if (!confirm("¿Eliminar este diagnóstico?")) return;
+    await supabase.from("diagnostics").delete().eq("id", id);
+    toast.success("Diagnóstico eliminado");
+    onRefresh();
+  };
+
+  const darkInput = "w-full px-3 py-2 border-[1.5px] border-white/10 rounded-lg bg-white/[0.06] text-white font-body text-sm outline-none focus:border-primary";
+
+  return (
+    <div>
+      <h1 className="font-heading text-2xl text-white mb-1">Diagnósticos realizados</h1>
+      <p className="text-sm text-white/40 mb-4">Filtra y consulta el detalle completo</p>
+
+      <div className="flex gap-3 flex-wrap items-center bg-white/[0.04] rounded-xl p-3 mb-4 border border-white/[0.07]">
+        <input className={`${darkInput} flex-[2] min-w-[200px]`} placeholder="Buscar cliente, empresa..." value={search} onChange={(e) => setSearch(e.target.value)} />
+        <select className={`${darkInput} flex-1 min-w-[130px]`} value={filterLevel} onChange={(e) => setFilterLevel(e.target.value)}>
+          <option value="">Todos los niveles</option>
+          <option value="high">🟢 Alto</option>
+          <option value="medium">🟡 Medio</option>
+          <option value="low">🔴 Bajo</option>
+        </select>
+        <span className="text-xs text-white/30 whitespace-nowrap">{filtered.length} resultado{filtered.length !== 1 ? "s" : ""}</span>
+      </div>
+
+      <div className="bg-white/[0.04] border border-white/[0.07] rounded-xl overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-white/[0.06]">
+              {["#", "Fecha", "Cliente", "Empresa", "Puntaje", "Nivel", "Eliminar"].map((h) => (
+                <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-white/40 uppercase tracking-wide">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((d, i) => {
+              const c = clients.find((cl) => cl.user_id === d.user_id);
+              const lvlCls = d.level === "high" ? "bg-success/10 text-success" : d.level === "medium" ? "bg-warning/10 text-warning" : "bg-danger/10 text-danger";
+              const lvlTxt = d.level === "high" ? "Alto" : d.level === "medium" ? "Medio" : "Bajo";
+              return (
+                <tr key={d.id} className="border-t border-white/[0.04] hover:bg-white/[0.03]">
+                  <td className="px-4 py-3 text-sm text-white/30">{i + 1}</td>
+                  <td className="px-4 py-3 text-sm text-white/70">{d.fecha}</td>
+                  <td className="px-4 py-3 text-sm text-white/70">{c?.nombre || "—"}</td>
+                  <td className="px-4 py-3 text-sm text-white/70">{c?.empresa || "—"}</td>
+                  <td className="px-4 py-3 text-sm font-bold text-blue-light">{d.score}%</td>
+                  <td className="px-4 py-3"><span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${lvlCls}`}>{lvlTxt}</span></td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => deleteDiag(d.id)} className="bg-danger/15 text-danger/80 border-none rounded-md px-2.5 py-1 text-xs cursor-pointer hover:bg-danger/25">🗑</button>
+                  </td>
+                </tr>
+              );
+            })}
+            {filtered.length === 0 && (
+              <tr><td colSpan={7} className="px-4 py-8 text-center text-white/30 text-sm">Sin resultados</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default AdminDiagnosticos;
