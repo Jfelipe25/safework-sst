@@ -2,12 +2,11 @@ import { useMemo } from "react";
 import { CHECKLIST } from "@/data/checklist";
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from "recharts";
 
 const TOTAL_PTS = CHECKLIST.reduce((s, cat) => s + cat.items.reduce((ss, it) => ss + it.pts, 0), 0);
-const CAT_HEX = ['#60A5FA','#34D399','#FBBF24','#F87171','#A78BFA','#F472B6'];
-
+const CAT_HEX = ['#60A5FA','#34D399','#FBBF24','#F87171','#A78BFA','#14B8A6'];
 interface Props {
   diag: any;
   client: any;
