@@ -217,21 +217,34 @@ const Resultado = () => {
             </div>
           </div>
 
-          {/* Category bars */}
+          {/* Category bars grouped by cycle */}
           <div className="text-left mb-8">
             <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">Resultado por categoría</h4>
-            {CHECKLIST.map((cat) => {
-              const s = catScores[cat.id] || 0;
-              const c = s >= 80 ? "#059669" : s >= 50 ? "#D97706" : "#DC2626";
+            {Object.entries(CYCLE_LABELS).map(([cycleKey, cycleLabel]) => {
+              const cycleCats = CHECKLIST.filter((cat) => cat.cycle === cycleKey);
+              if (cycleCats.length === 0) return null;
+              const cycleColor = cycleColors[cycleKey] || "hsl(var(--primary))";
               return (
-                <div key={cat.id} className="mb-3">
-                  <div className="flex justify-between items-center text-sm mb-1">
-                    <span className="font-semibold text-navy">{cat.icon} {cat.title.split(".")[1]?.trim()}</span>
-                    <span className="font-bold" style={{ color: c }}>{s}%</span>
+                <div key={cycleKey} className="mb-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cycleColor }} />
+                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: cycleColor }}>{cycleKey} — {cycleLabel}</span>
                   </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
-                    <div className="h-full rounded-full transition-all duration-700" style={{ width: `${s}%`, backgroundColor: c }} />
-                  </div>
+                  {cycleCats.map((cat) => {
+                    const s = catScores[cat.id] || 0;
+                    const c = s >= 80 ? "#059669" : s >= 50 ? "#D97706" : "#DC2626";
+                    return (
+                      <div key={cat.id} className="mb-3 pl-4 border-l-2" style={{ borderColor: cycleColor }}>
+                        <div className="flex justify-between items-center text-sm mb-1">
+                          <span className="font-semibold text-navy">{cat.icon} {cat.title.split(".")[1]?.trim()}</span>
+                          <span className="font-bold" style={{ color: c }}>{s}%</span>
+                        </div>
+                        <div className="h-2 bg-muted rounded-full overflow-hidden">
+                          <div className="h-full rounded-full transition-all duration-700" style={{ width: `${s}%`, backgroundColor: c }} />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               );
             })}
