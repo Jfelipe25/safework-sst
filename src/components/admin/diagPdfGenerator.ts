@@ -170,7 +170,7 @@ export function downloadDiagHTML(diag: any, client: any) {
 <html><head><meta charset="UTF-8">
 <title>Diagnóstico SST — ${(u?.empresa || '').replace(/</g, '&lt;')}</title>
 <style>
-  body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;color:#0A2540;font-size:13px}
+  body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:0;color:#0A2540;font-size:14.5px}
   @page{size:A4;margin:0}
   @media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 </style>
