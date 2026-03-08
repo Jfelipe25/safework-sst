@@ -176,6 +176,28 @@ const DiagDetailModal = ({ diag, client, onClose, onDownload }: Props) => {
           </div>
         </div>
 
+        {/* Cycle chart */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div className="bg-white/[0.04] rounded-xl p-5">
+            <div className="text-[0.75rem] font-bold text-white/40 uppercase tracking-wide mb-3">Puntaje por ciclo PHVA</div>
+            <div className="h-[220px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={cycleData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+                  <XAxis dataKey="name" tick={{ fill: 'rgba(255,255,255,0.6)', fontSize: 11 }} />
+                  <YAxis domain={[0, 100]} tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 9 }} tickFormatter={v => `${v}%`} />
+                  <Tooltip content={<CustomTooltip />} cursor={false} />
+                  <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                    {cycleData.map((entry, i) => (
+                      <Cell key={i} fill={entry.color} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+
         {/* Color legend */}
         <div className="bg-white/[0.04] rounded-xl p-4 mb-5 border border-white/[0.07]">
           <div className="text-[0.72rem] font-bold text-white/35 uppercase tracking-wide mb-2.5">Referencia de categorías</div>
