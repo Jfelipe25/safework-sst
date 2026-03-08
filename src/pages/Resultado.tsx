@@ -128,8 +128,34 @@ import { toast } from "sonner";
             })}
           </div>
 
+          {/* Plan recomendado + CTA */}
+          <div className="bg-secondary rounded-2xl p-6 text-left mb-8">
+            <h3 className="font-heading text-lg font-bold text-foreground mb-4">🚀 Plan Integral SST — Básico + Implementación</h3>
+            <ul className="space-y-2.5 mb-0">
+              {[
+                "Documentación completa del SG-SST",
+                "Implementación guiada paso a paso",
+                "Conformación y capacitación del COPASST",
+                "Elaboración de matriz de peligros y riesgos GTC-45",
+                "Plan de emergencias y simulacros",
+                "Programa de capacitación a trabajadores",
+                "Acompañamiento en mediciones higiénicas",
+                "Seguimiento mensual durante 12 meses",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-foreground">
+                  <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
           <div className="flex gap-4 justify-center flex-wrap">
-            <Button onClick={() => navigate("/dashboard")}>← Mis diagnósticos</Button>
+            <Button size="lg" onClick={handleContactar} disabled={sending} className="gap-2">
+              <Phone className="h-4 w-4" />
+              {sending ? "Enviando…" : "Contactar asesora"}
+            </Button>
+            <Button variant="outline" size="lg" onClick={() => navigate("/dashboard")}>← Mis diagnósticos</Button>
           </div>
         </div>
       </main>
