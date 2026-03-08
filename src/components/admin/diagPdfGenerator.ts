@@ -211,7 +211,7 @@ export function downloadDiagHTML(diag: any, client: any) {
       </div>`;
     }).join('');
 
-    return `<div style="margin-bottom:20px">
+    return `<div style="margin-bottom:20px;page-break-before:auto">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid ${cColor}">
         <div style="width:10px;height:10px;border-radius:50%;background:${cColor}"></div>
         <span style="font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:${cColor}">${cycleKey} — ${cycleLabel}</span>
