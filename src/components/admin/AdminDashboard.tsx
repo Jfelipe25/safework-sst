@@ -1,6 +1,6 @@
 import { AdminData } from "@/pages/Admin";
 import { CHECKLIST, CAT_COLORS } from "@/data/checklist";
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 const AdminDashboard = ({ data }: { data: AdminData }) => {
   const { clients, diagnostics } = data;
