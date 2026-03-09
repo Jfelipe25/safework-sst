@@ -40,11 +40,16 @@ const AuthModals = ({ mode, onClose, onSwitch }: AuthModalsProps) => {
       return;
     }
     onClose();
-    // Redirect based on role - need to wait for auth state to settle
-    const { data: roleData } = await (await import("@/integrations/supabase/client")).supabase
-      .from("user_roles").select("role").eq("user_id", (await (await import("@/integrations/supabase/client")).supabase.auth.getUser()).data.user?.id || "").single();
-    if (roleData?.role === "admin") {
-      navigate("/admin");
+    // Fetch role directly using the authenticated user
+    const { data: userData } = await supabase.auth.getUser();
+    if (userData.user) {
+      const { data: roleData } = await supabase
+        .from("user_roles").select("role").eq("user_id", userData.user.id).single();
+      if (roleData?.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } else {
       navigate("/dashboard");
     }
