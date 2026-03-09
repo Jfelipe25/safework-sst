@@ -14,7 +14,7 @@ const Index = () => {
       </main>
       {/* Footer */}
       <footer className="bg-navy text-white/40 text-center py-8 text-sm font-body">
-        © {new Date().getFullYear()} SafeWork SST · Consultoría en Seguridad y Salud en el Trabajo · Colombia
+        © {new Date().getFullYear()} JPR - SST · Julieth Pérez Rodríguez · Consultoría en Seguridad y Salud en el Trabajo · Colombia
       </footer>
     </div>
   );

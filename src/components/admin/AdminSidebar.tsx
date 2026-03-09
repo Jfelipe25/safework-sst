@@ -21,7 +21,7 @@ const AdminSidebar = ({ active, onNavigate, onLogout }: Props) => {
   return (
     <div className="w-[228px] min-w-[228px] bg-white/[0.04] border-r border-white/[0.07] p-4 flex flex-col gap-1 hidden lg:flex">
       <div className="font-heading text-lg font-bold text-white mb-6 px-2">
-        Safe<span className="text-blue-light">Work</span> <span className="font-body text-sm font-light">Admin</span>
+        <span className="text-blue-light">JPR</span> - SST <span className="font-body text-sm font-light">Admin</span>
       </div>
       {items.map((item) => (
         <button
