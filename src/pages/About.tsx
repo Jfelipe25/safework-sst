@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
+import profileImage from "@/assets/profile.png";
 
 const expertiseAreas = [
   { icon: "🛡️", title: "Seguridad y Salud en el Trabajo", desc: "Diseño e implementación del SG-SST conforme al Decreto 1072 y Resolución 0312." },
@@ -30,11 +31,8 @@ const About = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-14 items-start">
             {/* Photo sidebar */}
             <div className="lg:sticky lg:top-24 text-center">
-              <div className="w-full rounded-2xl overflow-hidden bg-blue-pale border-[3px] border-white shadow-elegant-lg aspect-[3/4] flex items-center justify-center mb-5">
-                <div className="flex flex-col items-center gap-3 text-muted-foreground text-sm text-center p-8">
-                  <span className="text-6xl">👩‍💼</span>
-                  <p>Foto de perfil</p>
-                </div>
+              <div className="w-full rounded-2xl overflow-hidden bg-blue-pale border-[3px] border-white shadow-elegant-lg aspect-[3/4] mb-5">
+                <img src={profileImage} alt="Julieth Pérez Rodríguez - Consultora SafeWork SST" className="w-full h-full object-cover" />
               </div>
               <h3 className="font-heading text-xl text-navy font-bold">Consultora SafeWork SST</h3>
               <p className="text-sm text-primary font-medium mt-1">Ingeniera Industrial · Especialista SST</p>
