@@ -4,6 +4,7 @@ interface Props {
   active: string;
   onNavigate: (panel: string) => void;
   onLogout: () => void;
+  unreadCount?: number;
 }
 
 const items = [
