@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { SECTORS, ARLS, RISK_LEVELS } from "@/data/constants";
@@ -12,6 +13,7 @@ interface AuthModalsProps {
 
 const AuthModals = ({ mode, onClose, onSwitch }: AuthModalsProps) => {
   const { signIn, signUp } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -32,8 +34,20 @@ const AuthModals = ({ mode, onClose, onSwitch }: AuthModalsProps) => {
     setLoading(true);
     setError("");
     const { error } = await signIn(loginEmail, loginPassword);
-    if (error) setError(error.message);
-    else onClose();
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+      return;
+    }
+    onClose();
+    // Redirect based on role - need to wait for auth state to settle
+    const { data: roleData } = await (await import("@/integrations/supabase/client")).supabase
+      .from("user_roles").select("role").eq("user_id", (await (await import("@/integrations/supabase/client")).supabase.auth.getUser()).data.user?.id || "").single();
+    if (roleData?.role === "admin") {
+      navigate("/admin");
+    } else {
+      navigate("/dashboard");
+    }
     setLoading(false);
   };
 
@@ -41,8 +55,8 @@ const AuthModals = ({ mode, onClose, onSwitch }: AuthModalsProps) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    if (!reg.nombre || !reg.correo || !reg.empresa || !reg.password) {
-      setError("Completa los campos obligatorios");
+    if (!reg.nombre || !reg.correo || !reg.empresa || !reg.password || !reg.telefono || !reg.ciudad || !reg.cargo || !reg.sector || !reg.arl || !reg.riesgo || !reg.trabajadores || !reg.nit) {
+      setError("Todos los campos son obligatorios");
       setLoading(false);
       return;
     }
@@ -63,8 +77,12 @@ const AuthModals = ({ mode, onClose, onSwitch }: AuthModalsProps) => {
       trabajadores: reg.trabajadores ? parseInt(reg.trabajadores) : null,
       telefono: reg.telefono || null,
     });
-    if (error) setError(error.message);
-    else onClose();
+    if (error) {
+      setError(error.message);
+    } else {
+      onClose();
+      navigate("/dashboard");
+    }
     setLoading(false);
   };
 
@@ -104,34 +122,34 @@ const AuthModals = ({ mode, onClose, onSwitch }: AuthModalsProps) => {
 
             <div className="grid grid-cols-2 gap-3">
               <div><label className={labelClass}>Nombre completo *</label><input className={inputClass} value={reg.nombre} onChange={(e) => setReg({ ...reg, nombre: e.target.value })} required /></div>
-              <div><label className={labelClass}>Teléfono</label><input className={inputClass} value={reg.telefono} onChange={(e) => setReg({ ...reg, telefono: e.target.value })} placeholder="+57 300..." /></div>
+              <div><label className={labelClass}>Teléfono *</label><input className={inputClass} value={reg.telefono} onChange={(e) => setReg({ ...reg, telefono: e.target.value })} placeholder="+57 300..." required /></div>
               <div><label className={labelClass}>Correo electrónico *</label><input type="email" className={inputClass} value={reg.correo} onChange={(e) => setReg({ ...reg, correo: e.target.value })} required /></div>
-              <div><label className={labelClass}>Ciudad</label><input className={inputClass} value={reg.ciudad} onChange={(e) => setReg({ ...reg, ciudad: e.target.value })} /></div>
+              <div><label className={labelClass}>Ciudad *</label><input className={inputClass} value={reg.ciudad} onChange={(e) => setReg({ ...reg, ciudad: e.target.value })} required /></div>
               <div><label className={labelClass}>Empresa *</label><input className={inputClass} value={reg.empresa} onChange={(e) => setReg({ ...reg, empresa: e.target.value })} required /></div>
-              <div><label className={labelClass}>NIT / Cédula</label><input className={inputClass} value={reg.nit} onChange={(e) => setReg({ ...reg, nit: e.target.value })} /></div>
-              <div><label className={labelClass}>Cargo</label><input className={inputClass} value={reg.cargo} onChange={(e) => setReg({ ...reg, cargo: e.target.value })} /></div>
+              <div><label className={labelClass}>NIT / Cédula *</label><input className={inputClass} value={reg.nit} onChange={(e) => setReg({ ...reg, nit: e.target.value })} required /></div>
+              <div><label className={labelClass}>Cargo *</label><input className={inputClass} value={reg.cargo} onChange={(e) => setReg({ ...reg, cargo: e.target.value })} required /></div>
               <div>
-                <label className={labelClass}>Sector económico</label>
-                <select className={inputClass} value={reg.sector} onChange={(e) => setReg({ ...reg, sector: e.target.value })}>
+                <label className={labelClass}>Sector económico *</label>
+                <select className={inputClass} value={reg.sector} onChange={(e) => setReg({ ...reg, sector: e.target.value })} required>
                   <option value="">Seleccionar...</option>
                   {SECTORS.map((s) => <option key={s}>{s}</option>)}
                 </select>
               </div>
               <div>
-                <label className={labelClass}>ARL</label>
-                <select className={inputClass} value={reg.arl} onChange={(e) => setReg({ ...reg, arl: e.target.value })}>
+                <label className={labelClass}>ARL *</label>
+                <select className={inputClass} value={reg.arl} onChange={(e) => setReg({ ...reg, arl: e.target.value })} required>
                   <option value="">Seleccionar...</option>
                   {ARLS.map((a) => <option key={a}>{a}</option>)}
                 </select>
               </div>
               <div>
-                <label className={labelClass}>Nivel de riesgo</label>
-                <select className={inputClass} value={reg.riesgo} onChange={(e) => setReg({ ...reg, riesgo: e.target.value })}>
+                <label className={labelClass}>Nivel de riesgo *</label>
+                <select className={inputClass} value={reg.riesgo} onChange={(e) => setReg({ ...reg, riesgo: e.target.value })} required>
                   <option value="">Seleccionar...</option>
                   {RISK_LEVELS.map((r) => <option key={r}>{r}</option>)}
                 </select>
               </div>
-              <div><label className={labelClass}>N° de trabajadores</label><input type="number" className={inputClass} value={reg.trabajadores} onChange={(e) => setReg({ ...reg, trabajadores: e.target.value })} min="1" /></div>
+              <div><label className={labelClass}>N° de trabajadores *</label><input type="number" className={inputClass} value={reg.trabajadores} onChange={(e) => setReg({ ...reg, trabajadores: e.target.value })} min="1" required /></div>
               <div><label className={labelClass}>Contraseña *</label><input type="password" className={inputClass} value={reg.password} onChange={(e) => setReg({ ...reg, password: e.target.value })} placeholder="Mínimo 6 caracteres" required /></div>
             </div>
             {error && <p className="text-sm text-danger mt-3">{error}</p>}
