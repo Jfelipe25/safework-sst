@@ -31,8 +31,7 @@ const Navbar = () => {
     <>
       <nav className="fixed top-0 left-0 right-0 z-50 h-[66px] bg-white/95 backdrop-blur-md border-b border-border shadow-soft flex items-center justify-between px-6 lg:px-10">
         <Link to="/" className="font-heading text-xl font-bold text-navy tracking-tight flex items-center gap-0.5">
-          Safe<span className="text-primary">Work</span>
-          <span className="font-body font-light text-base ml-0.5">SST</span>
+          <span className="text-primary">JPR</span> - SST
         </Link>
 
         <div className="hidden md:flex items-center gap-1">
