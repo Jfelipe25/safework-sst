@@ -4,6 +4,7 @@ interface Props {
   active: string;
   onNavigate: (panel: string) => void;
   onLogout: () => void;
+  unreadCount?: number;
 }
 
 const items = [
@@ -15,7 +16,7 @@ const items = [
   { id: "trazabilidad", icon: "📍", label: "Trazabilidad" },
 ];
 
-const AdminSidebar = ({ active, onNavigate, onLogout }: Props) => {
+const AdminSidebar = ({ active, onNavigate, onLogout, unreadCount = 0 }: Props) => {
   const { signOut } = useAuth();
 
   return (
@@ -32,6 +33,11 @@ const AdminSidebar = ({ active, onNavigate, onLogout }: Props) => {
           }`}
         >
           <span>{item.icon}</span> {item.label}
+          {item.id === "notificaciones" && unreadCount > 0 && (
+            <span className="ml-auto bg-red-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+              {unreadCount > 99 ? "99+" : unreadCount}
+            </span>
+          )}
         </button>
       ))}
       <div className="flex-1" />

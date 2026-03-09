@@ -1,6 +1,6 @@
 import { AdminData } from "@/pages/Admin";
 import { CHECKLIST, CAT_COLORS } from "@/data/checklist";
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 const AdminDashboard = ({ data }: { data: AdminData }) => {
   const { clients, diagnostics } = data;
@@ -109,12 +109,13 @@ const AdminDashboard = ({ data }: { data: AdminData }) => {
         <div className="bg-white/[0.04] border border-white/[0.07] rounded-xl p-5">
           <h3 className="text-sm font-semibold text-white mb-4">Promedio por categoría</h3>
           <ResponsiveContainer width="100%" height={220}>
-            <RadarChart data={catAvgs}>
-              <PolarGrid stroke="rgba(255,255,255,0.1)" />
-              <PolarAngleAxis dataKey="category" tick={{ fontSize: 9, fill: "rgba(255,255,255,0.55)" }} />
-              <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 8, fill: "rgba(255,255,255,0.4)" }} />
-              <Radar dataKey="value" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.2} strokeWidth={2} />
-            </RadarChart>
+            <BarChart data={catAvgs} layout="vertical" margin={{ left: 10, right: 20, top: 5, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.07)" horizontal={false} />
+              <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 10, fill: "rgba(255,255,255,0.4)" }} />
+              <YAxis type="category" dataKey="category" tick={{ fontSize: 9, fill: "rgba(255,255,255,0.55)" }} width={100} />
+              <Tooltip contentStyle={{ background: "#1e293b", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, color: "#fff", fontSize: 12 }} />
+              <Bar dataKey="value" fill="#3B82F6" radius={[0, 4, 4, 0]} barSize={14} />
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
