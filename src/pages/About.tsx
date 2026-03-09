@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
+import profileImage from "@/assets/profile.png";
 
 const expertiseAreas = [
   { icon: "🛡️", title: "Seguridad y Salud en el Trabajo", desc: "Diseño e implementación del SG-SST conforme al Decreto 1072 y Resolución 0312." },
