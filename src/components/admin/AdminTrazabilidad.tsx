@@ -17,6 +17,17 @@ const AdminTrazabilidad = ({ data, onRefresh }: { data: AdminData; onRefresh: ()
 
   useEffect(() => { fetchTraz(); }, []);
 
+  // Realtime subscription for trazabilidad
+  useEffect(() => {
+    const channel = supabase
+      .channel('trazabilidad-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'trazabilidad' }, () => {
+        fetchTraz();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
   const fetchTraz = async () => {
     const { data: rows } = await supabase.from("trazabilidad").select("*");
     setTrazData(rows || []);
@@ -37,7 +48,12 @@ const AdminTrazabilidad = ({ data, onRefresh }: { data: AdminData; onRefresh: ()
   });
 
   const updateStatus = async (clientId: string, statusId: string) => {
-    await supabase.from("trazabilidad").upsert({ client_id: clientId, status_id: statusId }, { onConflict: "client_id" });
+    const existing = trazData.find(t => t.client_id === clientId);
+    if (existing) {
+      await supabase.from("trazabilidad").update({ status_id: statusId }).eq("client_id", clientId);
+    } else {
+      await supabase.from("trazabilidad").insert({ client_id: clientId, status_id: statusId });
+    }
     toast.success("Estado actualizado");
     fetchTraz();
   };
@@ -53,24 +69,42 @@ const AdminTrazabilidad = ({ data, onRefresh }: { data: AdminData; onRefresh: ()
   };
 
   const openDetail = (row: any) => {
-    setDetailClient(row);
-    setDetailStatus(row.traz?.status_id || "sin-diag");
+    // Re-fetch latest traz data for this client to get fresh comments
+    const latestTraz = trazData.find(t => t.client_id === row.client.user_id);
+    setDetailClient({ ...row, traz: latestTraz || row.traz });
+    setDetailStatus(latestTraz?.status_id || row.traz?.status_id || "sin-diag");
     setComment("");
   };
 
   const saveDetail = async () => {
     if (!detailClient) return;
-    const traz = detailClient.traz;
-    const existingComments = (traz?.comentarios || []) as any[];
+    const clientId = detailClient.client.user_id;
+    const existing = trazData.find(t => t.client_id === clientId);
+    const existingComments = (existing?.comentarios || []) as any[];
     const newComments = comment.trim()
       ? [...existingComments, { text: comment.trim(), date: new Date().toISOString() }]
       : existingComments;
 
-    await supabase.from("trazabilidad").upsert({
-      client_id: detailClient.client.user_id,
-      status_id: detailStatus,
-      comentarios: newComments,
-    }, { onConflict: "client_id" });
+    if (existing) {
+      const { error } = await supabase.from("trazabilidad").update({
+        status_id: detailStatus,
+        comentarios: newComments,
+      }).eq("client_id", clientId);
+      if (error) {
+        toast.error("Error al guardar: " + error.message);
+        return;
+      }
+    } else {
+      const { error } = await supabase.from("trazabilidad").insert({
+        client_id: clientId,
+        status_id: detailStatus,
+        comentarios: newComments,
+      });
+      if (error) {
+        toast.error("Error al guardar: " + error.message);
+        return;
+      }
+    }
 
     toast.success("Guardado");
     setDetailClient(null);
@@ -96,6 +130,11 @@ const AdminTrazabilidad = ({ data, onRefresh }: { data: AdminData; onRefresh: ()
     ...s,
     count: clientRows.filter((r) => (r.traz?.status_id || "sin-diag") === s.id).length,
   })).filter((s: any) => s.count > 0);
+
+  // Get fresh comments for detail modal
+  const detailComments = detailClient
+    ? ((trazData.find(t => t.client_id === detailClient.client.user_id)?.comentarios || []) as any[])
+    : [];
 
   return (
     <div>
@@ -269,11 +308,11 @@ const AdminTrazabilidad = ({ data, onRefresh }: { data: AdminData; onRefresh: ()
               </div>
 
               {/* Comment history */}
-              {detailClient.traz?.comentarios && (detailClient.traz.comentarios as any[]).length > 0 && (
+              {detailComments.length > 0 && (
                 <div className="mb-4">
                   <div className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Historial de notas</div>
                   <div className="flex flex-col gap-2 max-h-40 overflow-y-auto">
-                    {([...(detailClient.traz.comentarios as any[])]).reverse().map((c: any, i: number) => (
+                    {([...detailComments]).reverse().map((c: any, i: number) => (
                       <div key={i} className="bg-gray-50 rounded-lg p-3">
                         <div className="text-xs text-gray-400 mb-1">{new Date(c.date).toLocaleDateString("es-CO")}</div>
                         <div className="text-sm text-gray-700">{c.text}</div>

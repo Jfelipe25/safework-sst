@@ -31,6 +31,21 @@ const Admin = () => {
     if (user && role === "admin") fetchAll();
   }, [user, role]);
 
+  // Realtime subscriptions for all admin tables
+  useEffect(() => {
+    if (!user || role !== "admin") return;
+
+    const channel = supabase
+      .channel('admin-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => fetchAll())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'diagnostics' }, () => fetchAll())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'solicitudes' }, () => fetchAll())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'traz_statuses' }, () => fetchAll())
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [user, role]);
+
   const fetchAll = async () => {
     const [profiles, diags, sols, statuses] = await Promise.all([
       supabase.from("profiles").select("*"),
