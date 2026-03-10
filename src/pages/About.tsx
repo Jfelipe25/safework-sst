@@ -21,7 +21,7 @@ const About = () => {
         {/* Hero */}
         <section className="relative overflow-hidden py-20 px-6 text-center" style={{ background: "var(--gradient-cta)" }}>
           <div className="absolute -top-20 -right-20 w-[400px] h-[400px] rounded-full bg-primary/[0.12]" />
-          <p className="text-xs font-semibold tracking-[2px] uppercase text-white/60 mb-3 relative z-10">Conóceme</p>
+          <p className="text-xs font-semibold tracking-[2px] uppercase text-white/60 mb-3 relative z-10"></p>
           <h1 className="font-heading text-3xl lg:text-[2.8rem] text-white font-bold mb-3 relative z-10">Julieth Perez</h1>
           <p className="text-white/65 text-base relative z-10">Ingeniera Industrial · Consultora SST · Especialista en Gestión Organizacional</p>
         </section>
