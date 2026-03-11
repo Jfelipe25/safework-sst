@@ -68,7 +68,8 @@ const AdminClientes = ({ data }: { data: AdminData }) => {
       </div>
 
       <div className="bg-white/[0.04] border border-white/[0.07] rounded-xl overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[560px]">
           <thead>
             <tr className="bg-white/[0.06]">
               {["Nombre", "Empresa", "Sector", "Ciudad", "Riesgo", "Detalle"].map((h) => (
@@ -99,6 +100,7 @@ const AdminClientes = ({ data }: { data: AdminData }) => {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* Detail modal */}

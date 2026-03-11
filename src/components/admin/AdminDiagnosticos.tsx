@@ -88,7 +88,8 @@ const AdminDiagnosticos = ({ data, onRefresh }: { data: AdminData; onRefresh: ()
       </div>
 
       <div className="bg-white/[0.04] border border-white/[0.07] rounded-xl overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px]">
           <thead>
             <tr className="bg-white/[0.06]">
               {["#", "Fecha", "Cliente", "Empresa", "Ciudad", "Puntaje", "Nivel", "Acciones"].map((h) => (
@@ -122,6 +123,7 @@ const AdminDiagnosticos = ({ data, onRefresh }: { data: AdminData; onRefresh: ()
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {detailDiag && (
