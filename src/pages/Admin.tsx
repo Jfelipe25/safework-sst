@@ -75,7 +75,7 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-navy flex">
       <AdminSidebar active={activePanel} onNavigate={setActivePanel} onLogout={() => { navigate("/"); }} unreadCount={data.solicitudes.filter(s => !s.leida).length} />
-      <div className="flex-1 p-6 lg:p-10 overflow-y-auto max-h-screen">
+      <div className="flex-1 p-6 pt-20 lg:pt-6 lg:p-10 overflow-y-auto max-h-screen">
         {panels[activePanel]}
       </div>
     </div>
