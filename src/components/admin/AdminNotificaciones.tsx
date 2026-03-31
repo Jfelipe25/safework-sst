@@ -12,7 +12,7 @@ interface NotifRow {
   tipo: string;
   asunto: string;
   email_to: string;
-  estado: string; // 'enviado' | 'error'
+  estado: string;
 }
 
 // ── Templates ────────────────────────────────────────────────────────────────
@@ -55,7 +55,6 @@ const AdminNotificaciones = ({ data, onRefresh }: { data: AdminData; onRefresh: 
   const [historial, setHistorial] = useState<NotifRow[]>([]);
   const [loadingHistorial, setLoadingHistorial] = useState(true);
 
-  // ── Cargar historial desde Supabase ──────────────────────────────────────
   const fetchHistorial = useCallback(async () => {
     setLoadingHistorial(true);
     const { data: rows, error } = await supabase
@@ -70,7 +69,6 @@ const AdminNotificaciones = ({ data, onRefresh }: { data: AdminData; onRefresh: 
 
   useEffect(() => { fetchHistorial(); }, [fetchHistorial]);
 
-  // ── Solicitudes ───────────────────────────────────────────────────────────
   const markRead = async (id: string) => {
     await supabase.from("solicitudes").update({ leida: true }).eq("id", id);
     onRefresh();
@@ -85,7 +83,6 @@ const AdminNotificaciones = ({ data, onRefresh }: { data: AdminData; onRefresh: 
     onRefresh();
   };
 
-  // ── Templates ─────────────────────────────────────────────────────────────
   const loadTemplate = (tipoKey: string) => {
     setTipo(tipoKey);
     const tpl = TEMPLATES[tipoKey];
@@ -94,12 +91,9 @@ const AdminNotificaciones = ({ data, onRefresh }: { data: AdminData; onRefresh: 
     const nombre = client?.nombre || "{nombre}";
     const empresa = client?.empresa || "{empresa}";
     setAsunto(tpl.asunto.replace("{nombre}", nombre).replace("{empresa}", empresa));
-    setMensaje(
-      tpl.mensaje.replace(/{nombre}/g, nombre).replace(/{empresa}/g, empresa)
-    );
+    setMensaje(tpl.mensaje.replace(/{nombre}/g, nombre).replace(/{empresa}/g, empresa));
   };
 
-  // ── Enviar notificación ───────────────────────────────────────────────────
   const sendNotification = async () => {
     if (!selectedClient || !asunto.trim() || !mensaje.trim()) {
       toast.error("Completa todos los campos obligatorios");
@@ -120,8 +114,6 @@ const AdminNotificaciones = ({ data, onRefresh }: { data: AdminData; onRefresh: 
       const token = sessionData.session?.access_token;
 
       const res = await supabase.functions.invoke("clever-task", {
-console.log("RES DATA:", res.data);
-console.log("RES ERROR:", res.error);
         body: {
           client_id: selectedClient,
           email_to,
@@ -131,6 +123,9 @@ console.log("RES ERROR:", res.error);
         },
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       });
+
+      console.log("RES DATA:", res.data);
+      console.log("RES ERROR:", res.error);
 
       if (res.error || res.data?.error) {
         const detail = res.data?.detail
@@ -143,7 +138,7 @@ console.log("RES ERROR:", res.error);
         setTipo("");
         setAsunto("");
         setMensaje("");
-        fetchHistorial(); // refrescar historial
+        fetchHistorial();
       }
     } catch (err) {
       toast.error(`Error inesperado: ${String(err)}`);
@@ -152,13 +147,11 @@ console.log("RES ERROR:", res.error);
     }
   };
 
-  // ── Estilos comunes ───────────────────────────────────────────────────────
   const unreadCount = solicitudes.filter((s) => !s.leida).length;
   const darkInput =
     "w-full px-3 py-2 border-[1.5px] border-white/10 rounded-lg bg-white/[0.06] text-white font-body text-sm outline-none focus:border-primary";
   const darkLabel = "block text-xs font-semibold text-white/50 mb-1";
 
-  // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div>
       <h1 className="font-heading text-2xl text-white mb-1">Enviar notificaciones</h1>
@@ -166,7 +159,6 @@ console.log("RES ERROR:", res.error);
         Envía mensajes personalizados a clientes por correo electrónico
       </p>
 
-      {/* ── Formulario ── */}
       <div className="bg-white/[0.04] border border-white/[0.07] rounded-xl p-6 mb-8">
         <div className="mb-4">
           <label className={darkLabel}>Destinatario *</label>
@@ -242,7 +234,6 @@ console.log("RES ERROR:", res.error);
         </div>
       </div>
 
-      {/* ── Historial persistente ── */}
       <div className="mb-8">
         <h3 className="text-sm font-semibold text-white mb-3">
           📤 Historial de notificaciones enviadas
@@ -309,7 +300,6 @@ console.log("RES ERROR:", res.error);
         </div>
       </div>
 
-      {/* ── Solicitudes de contacto ── */}
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-sm font-semibold text-white">
           📩 Solicitudes de contacto
