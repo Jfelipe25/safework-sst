@@ -120,6 +120,8 @@ const AdminNotificaciones = ({ data, onRefresh }: { data: AdminData; onRefresh: 
       const token = sessionData.session?.access_token;
 
       const res = await supabase.functions.invoke("clever-task", {
+console.log("RES DATA:", res.data);
+console.log("RES ERROR:", res.error);
         body: {
           client_id: selectedClient,
           email_to,
