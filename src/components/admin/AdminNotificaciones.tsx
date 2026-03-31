@@ -119,7 +119,7 @@ const AdminNotificaciones = ({ data, onRefresh }: { data: AdminData; onRefresh: 
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
 
-      const res = await supabase.functions.invoke("send-notification", {
+      const res = await supabase.functions.invoke("clever-task", {
         body: {
           client_id: selectedClient,
           email_to,
